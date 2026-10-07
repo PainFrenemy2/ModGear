@@ -14,6 +14,7 @@
 ![Linux](https://img.shields.io/badge/Linux-x86-FCC624?style=flat-square&logo=linux&logoColor=black)
 
 [**📥 Скачать**](https://github.com/PainFrenemy2/ModGear/releases/latest) •
+[**📖 Документация**](https://painfrenemy2.github.io/ModGear/docs/) •
 [**💬 Купить / связь**](https://vk.com/seym2)
 
 </div>

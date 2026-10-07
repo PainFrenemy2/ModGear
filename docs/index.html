@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ModGear — документация</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: справочник — липкая колонка навигации с поиском слева, функции карточками-статьями справа; на телефоне навигация сверху. */
+:root {
+  --bg: #f3f4f7;
+  --panel: #ffffff;
+  --ink: #171a23;
+  --muted: #5d6475;
+  --line: #dde0e8;
+  --accent: #d6463a;      /* красный, как плашка в меню кастомизации */
+  --accent-soft: #fbe6e3;
+  --code-bg: #f0f1f6;
+  --code-ink: #2a2f3d;
+  --kw: #8a3ffc;
+  --str: #1a7f4b;
+  --num: #b25c00;
+  --ok: #1a7f4b;
+  --warn: #9a6400;
+  --f-display: "Unbounded", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Golos Text", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", Consolas, "Courier New", monospace;
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12141b; --panel: #1a1d27; --ink: #e8eaf1; --muted: #9aa1b3; --line: #2b2f3c;
+    --accent: #ff6a5c; --accent-soft: #3a1f1e; --code-bg: #0e1016; --code-ink: #d7dae4;
+    --kw: #c19bff; --str: #6fd49b; --num: #ffb35c; --ok: #6fd49b; --warn: #ffc865;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12141b; --panel: #1a1d27; --ink: #e8eaf1; --muted: #9aa1b3; --line: #2b2f3c;
+  --accent: #ff6a5c; --accent-soft: #3a1f1e; --code-bg: #0e1016; --code-ink: #d7dae4;
+  --kw: #c19bff; --str: #6fd49b; --num: #ffb35c; --ok: #6fd49b; --warn: #ffc865;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.55; margin: 0; }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.wrap { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 32px; max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 24px 64px; }
+aside { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); align-self: start; max-height: calc(100vh - 32px); overflow: auto; display: flex; flex-direction: column; gap: 14px; }
+.brand { font-family: var(--f-display); font-weight: 700; font-size: 22px; letter-spacing: -0.01em; display: flex; align-items: baseline; gap: 8px; }
+.brand small { font-family: var(--f-mono); font-weight: 400; font-size: 11px; color: var(--muted); letter-spacing: 0.02em; }
+#q { width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font: inherit; }
+nav { display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+nav .grp { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-top: 10px; padding-inline: 8px; }
+nav a { color: var(--ink); text-decoration: none; padding: 3px 8px; border-radius: 6px; font-family: var(--f-mono); font-size: 12.5px; overflow-wrap: anywhere; }
+nav a:hover { background: var(--accent-soft); }
+.theme { display: flex; gap: 6px; }
+.theme button { flex: 1; font: inherit; font-size: 12px; padding: 5px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--muted); cursor: pointer; }
+.theme button[aria-pressed="true"] { color: var(--ink); border-color: var(--accent); }
+
+main { min-width: 0; display: flex; flex-direction: column; gap: 40px; }
+header.hero h1 { font-family: var(--f-display); font-size: clamp(28px, 4.5vw, 42px); line-height: 1.1; margin: 0 0 10px; text-wrap: balance; letter-spacing: -0.02em; }
+header.hero p { max-width: 64ch; margin: 0 0 8px; color: var(--muted); }
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 18px; }
+.step { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; min-width: 0; }
+.step b { display: block; font-family: var(--f-display); font-weight: 500; font-size: 13px; margin-bottom: 4px; }
+.step p { margin: 0; font-size: 14px; color: var(--muted); }
+
+section h2 { font-family: var(--f-display); font-weight: 500; font-size: 22px; margin: 0 0 6px; text-wrap: balance; }
+section > p.lead { margin: 0 0 16px; color: var(--muted); max-width: 70ch; }
+.fns { display: flex; flex-direction: column; gap: 14px; }
+article.fn { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 18px 20px; min-width: 0; scroll-margin-top: 16px; }
+.fn h3 { margin: 0 0 6px; font-family: var(--f-mono); font-size: 16px; font-weight: 600; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.tag { font-family: var(--f-body); font-size: 11px; font-weight: 600; letter-spacing: 0.04em; padding: 2px 7px; border-radius: 99px; background: var(--accent-soft); color: var(--accent); }
+.tag.alfa { background: transparent; border: 1px solid var(--line); color: var(--muted); }
+.fn .desc { margin: 0 0 12px; max-width: 72ch; }
+pre { margin: 0; background: var(--code-bg); color: var(--code-ink); border-radius: 8px; padding: 12px 14px; overflow-x: auto; font-family: var(--f-mono); font-size: 13px; line-height: 1.5; }
+code { font-family: var(--f-mono); font-size: 0.92em; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+pre code { background: none; padding: 0; }
+.k { color: var(--kw); } .s { color: var(--str); } .n { color: var(--num); } .c { color: var(--muted); font-style: italic; }
+dl.params { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 16px; margin: 12px 0; font-size: 14px; }
+dl.params dt { font-family: var(--f-mono); font-size: 13px; color: var(--ink); }
+dl.params dd { margin: 0; color: var(--muted); }
+.ret { display: flex; gap: 10px; align-items: baseline; font-size: 14px; margin: 10px 0 12px; }
+.ret span:first-child { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); flex: none; }
+.note { font-size: 13.5px; color: var(--warn); margin: 8px 0 0; }
+.ex-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0 0 6px; }
+
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r); background: var(--panel); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); font-weight: 600; }
+tr:last-child td { border-bottom: 0; }
+td.m { font-family: var(--f-mono); font-size: 12.5px; white-space: nowrap; }
+td.num { font-variant-numeric: tabular-nums; font-family: var(--f-mono); font-size: 12.5px; }
+.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--ok); margin-right: 6px; vertical-align: middle; }
+.dot.q { background: var(--warn); }
+.empty { color: var(--muted); }
+footer { color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); padding-top: 16px; }
+
+@media (max-width: 860px) {
+  .wrap { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  aside { position: static; max-height: none; }
+  nav { flex-direction: row; flex-wrap: wrap; gap: 4px; }
+  nav .grp { width: 100%; margin-top: 6px; }
+  nav a.fnl { display: none; }
+  dl.params { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  dl.params dd { margin-bottom: 8px; }
+}
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <aside>
+    <div class="brand">ModGear <small>версия 0.6.5</small></div>
+    <input id="q" type="search" placeholder="Поиск функции…" aria-label="Поиск функции">
+    <div class="theme" role="group" aria-label="Тема">
+      <button type="button" data-t="system" id="t-sys">Авто</button>
+      <button type="button" data-t="light" id="t-light">Светлая</button>
+      <button type="button" data-t="dark" id="t-dark">Тёмная</button>
+    </div>
+    <nav id="nav" aria-label="Разделы"></nav>
+  </aside>
+
+  <main>
+    <header class="hero" id="start">
+      <h1>ModGear для Pawn</h1>
+      <p>Плагин для SA-MP и компонент для open.mp: интерфейс лаунчера, тюнинг, хендлинг, звук в машинах и колонках, аксессуары. Все функции работают только для игроков, зашедших с лаунчера.</p>
+      <p>Функции с пометкой <span class="tag alfa">Alfa</span> есть и в урезанной версии ModGearAlfa.</p>
+      <div class="steps">
+        <div class="step"><b>Установка</b><p>Плагин в <code>plugins</code> (SA-MP) или <code>components</code> (open.mp), <code>ModGear.inc</code> — в <code>pawno/include</code>.</p></div>
+        <div class="step"><b>Подключение</b><p><code>#include &lt;ModGear&gt;</code> в моде. Версия инклуда должна совпадать с плагином — иначе в логе будет предупреждение.</p></div>
+        <div class="step"><b>Первый вызов</b><p>Когда игрок зашёл с лаунчера — <code>SetPlayerLauncherStatus(playerid, true)</code>. До этого остальные функции ему ничего не отправляют.</p></div>
+      </div>
+    </header>
+    <div id="content"></div>
+    <footer>ModGear · документация к версии 0.6.5. Возвращаемые значения: <code>1</code> — выполнено, <code>0</code> — неверные параметры или машина/игрок не найдены, если не сказано иначе.</footer>
+  </main>
+</div>
+
+<script>
+// ---------- данные ----------
+const SECTIONS = [
+ { id: "player", title: "Игрок", lead: "Статус лаунчера и общие настройки игрока.", fns: [
+  { n: "SetPlayerLauncherStatus", alfa: 1, sig: "SetPlayerLauncherStatus(playerid, bool:status)",
+    d: "Отмечает, что игрок зашёл с лаунчера. Вызывайте первой — без неё плагин не отправляет игроку ни интерфейс, ни тюнинг, ни звук. При включении игрок сразу получает колонки, которые уже стоят на карте.",
+    p: [["playerid", "ид игрока"], ["status", "true — с лаунчером, false — без"]], r: "1, или 0 если status не 0/1",
+    ex: `public OnPlayerConnect(playerid)\n{\n    SetPlayerLauncherStatus(playerid, true);\n    return 1;\n}` },
+  { n: "GetPlayerLauncherStatus", alfa: 1, sig: "GetPlayerLauncherStatus(playerid)",
+    d: "Проверяет, отмечен ли игрок как зашедший с лаунчера.", p: [["playerid", "ид игрока"]], r: "1 — с лаунчером, 0 — без",
+    ex: `if(!GetPlayerLauncherStatus(playerid))\n    return SendClientMessage(playerid, -1, "Нужен лаунчер");` },
+  { n: "SetPlayerCollisionStatus", sig: "SetPlayerCollisionStatus(playerid, bool:status)",
+    d: "Включает или выключает столкновения игрока с другими игроками.", p: [["playerid", "ид игрока"], ["status", "true — столкновения есть, false — проходит сквозь игроков"]], r: "1, или 0 если игрок без лаунчера",
+    ex: `SetPlayerCollisionStatus(playerid, false);` },
+  { n: "ShowPlayerTag", sig: "ShowPlayerTag(playerid, const nametag[], bool:status)",
+    d: "Показывает значок над ником игрока всем, кто его видит.", p: [["playerid", "ид игрока"], ["nametag", "имя текстуры значка из /models/icons.txd"], ["status", "true — показать, false — убрать"]], r: "1",
+    ex: `ShowPlayerTag(playerid, "admin", true);` },
+  { n: "SetPlayerChatRoom", sig: "SetPlayerChatRoom(playerid, type, bool:status)",
+    d: "Включает вкладку чата у игрока.", p: [["type", "CHAT_MOD_VIP, CHAT_MOD_ORG, CHAT_MOD_ORG_NONRP, CHAT_MOD_FAMILY, CHAT_MOD_NONRP, CHAT_MOD_SHOUT, CHAT_MOD_WHISPER, CHAT_MOD_WORK"], ["status", "true — показать вкладку"]], r: "1, или 0 при неверном type",
+    ex: `SetPlayerChatRoom(playerid, CHAT_MOD_FAMILY, true);` },
+ ]},
+ { id: "ui", title: "Интерфейс", lead: "Худ, спидометр, подсказки и любые события интерфейса.", fns: [
+  { n: "InterfaceCef", sig: "InterfaceCef(playerid, index, type)",
+    d: "Меняет одну настройку интерфейса игрока. Значения для каждой настройки — в таблице ниже.", p: [["index", "настройка Custom_*"], ["type", "значение настройки"]], r: "1, или 0 если значение вне диапазона",
+    ex: `InterfaceCef(playerid, Custom_Hud, 3);         // худ San Andreas\nInterfaceCef(playerid, Custom_Speedometer, 3); // продвинутый спидометр\nInterfaceCef(playerid, Custom_Show, 1);        // снегопад`, table: "custom" },
+  { n: "UpdateInfoHudGtaSa", sig: "UpdateInfoHudGtaSa(ServerNumber, const ServerName[], const ServerProject[], const ServerType[], ServerFlag, ServerLogo, XPayday, playerid = -1)",
+    d: "Данные сервера на худе: номер, название, проект, тип, флаг, логотип и множитель PayDay.", p: [["playerid", "кому показать; -1 — всем игрокам с лаунчером"]], r: "1",
+    ex: `UpdateInfoHudGtaSa(5, "Brainburg", "Arizona", "Role Play", 5, 56, 1);` },
+  { n: "UpdateInfoHotKey", sig: "UpdateInfoHotKey(playerid, type, const nameKey[] = \"null\")",
+    d: "Задаёт клавишу в подсказке горячих клавиш.", p: [["type", "HOT_KEY_RADIO, HOT_KEY_FRACTION_RADIO, HOT_KEY_FAMILY_RADIO, HOT_KEY_INTERACTION, HOT_KEY_PHONE"], ["nameKey", "текст клавиши, например \"P\"; \"null\" — скрыть"]], r: "1, или 0 при неверном type",
+    ex: `UpdateInfoHotKey(playerid, HOT_KEY_PHONE, "P");` },
+  { n: "ShowCef", sig: "ShowCef(playerid, const event[])",
+    d: "Выполняет произвольное событие в интерфейсе игрока. Для своих окон и того, чего нет в InterfaceCef.", p: [["event", "строка JS"]], r: "1",
+    ex: `ShowCef(playerid, "window.executeEvent('event.setActiveView', \`[\\"Inventory\\"]\`);");` },
+  { n: "ShowCefMobile", sig: "ShowCefMobile(playerid, arg_1, arg_2, const event[])", d: "То же, что ShowCef, для мобильного лаунчера.", p: [["arg_1, arg_2", "номер окна и действие"], ["event", "данные для окна"]], r: "1", ex: `ShowCefMobile(playerid, 9, 3, "success");` },
+  { n: "ShowSelectCef", sig: "ShowSelectCef(playerid, browzerid, bool:status)", d: "Включает или выключает курсор в окне интерфейса.", p: [["browzerid", "номер окна (для мобильных)"], ["status", "true — курсор есть"]], r: "1", ex: `ShowSelectCef(playerid, 0, true);` },
+  { n: "ShowYouTubeVideoPhone", sig: "ShowYouTubeVideoPhone(playerid, params[])", d: "Открывает видео YouTube в телефоне игрока.", p: [["params", "ссылка https://www.youtube.com/watch?v=… или id видео"]], r: "1", ex: `ShowYouTubeVideoPhone(playerid, "https://www.youtube.com/watch?v=dQw4w9WgXcQ");` },
+  { n: "HideYouTubeVideoPhone", sig: "HideYouTubeVideoPhone(playerid)", d: "Закрывает видео в телефоне.", p: [], r: "1", ex: `HideYouTubeVideoPhone(playerid);` },
+ ]},
+ { id: "acs", title: "Аксессуары", lead: "Аксессуары на игроке: 10 слотов (0–9), видны всем игрокам с лаунчером рядом.", fns: [
+  { n: "SetPlayerAttachedObjectEx", sig: "SetPlayerAttachedObjectEx(playerid, index, bool:create, modelid, bone, Float:fOffsetX = 0.0, Float:fOffsetY = 0.0, Float:fOffsetZ = 0.0, Float:fRotX = 0.0, Float:fRotY = 0.0, Float:fRotZ = 0.0, Float:fScaleX = 1.0, Float:fScaleY = 1.0, Float:fScaleZ = 1.0, materialcolor1 = 0, materialcolor2 = 0)",
+    d: "Надевает аксессуар в слот. Параметры как у SetPlayerAttachedObject.", p: [["index", "слот 0–9"], ["create", "true — надеть"], ["bone", "кость 1–18"]], r: "1, или 0 при неверном слоте или кости",
+    ex: `SetPlayerAttachedObjectEx(playerid, 0, true, 19421, 2, 0.08, 0.0, 0.0);` },
+  { n: "RemovePlayerAttachedObjectEx", sig: "RemovePlayerAttachedObjectEx(playerid, index)", d: "Снимает аксессуар из слота.", p: [["index", "слот 0–9"]], r: "1", ex: `RemovePlayerAttachedObjectEx(playerid, 0);` },
+  { n: "IsPlayerAttachedObjectSlotEx", sig: "IsPlayerAttachedObjectSlotEx(playerid, index)", d: "Проверяет, занят ли слот.", p: [["index", "слот 0–9"]], r: "1 — занят, 0 — свободен", ex: `if(IsPlayerAttachedObjectSlotEx(playerid, 0)) { }` },
+  { n: "EditAttachedObjectEx", sig: "EditAttachedObjectEx(playerid, index)", d: "Открывает редактор положения аксессуара.", p: [["index", "слот 0–9"]], r: "1", ex: `EditAttachedObjectEx(playerid, 0);` },
+ ]},
+ { id: "tuning", title: "Тюнинг", lead: "Всё сохраняется на машине и само отправляется игрокам, у которых она появляется. При DestroyVehicle сбрасывается. Цвета 0–255 — палитра машин SA-MP.", fns: [
+  { n: "InstallVehicleComponent", sig: "InstallVehicleComponent(carid, slot, component)", d: "Ставит деталь лаунчера в слот.", p: [["slot", "VEHICLE_COMPONENT_CAPOT, _SPOILER, _GLUSHITEL, _DISKI"], ["component", "модель детали"]], r: "1", ex: `InstallVehicleComponent(carid, VEHICLE_COMPONENT_DISKI, 6760);` },
+  { n: "GetVehicleInComponentSlot", sig: "GetVehicleInComponentSlot(carid, slot)", d: "Узнаёт, какая деталь стоит в слоте.", p: [["slot", "1–4"]], r: "модель детали, 0 — пусто", ex: `new disk = GetVehicleInComponentSlot(carid, VEHICLE_COMPONENT_DISKI);` },
+  { n: "GetVehicleInSlotComponent", sig: "GetVehicleInSlotComponent(carid, component)", d: "Узнаёт, в каком слоте стоит деталь.", p: [["component", "модель детали"]], r: "номер слота 1–4, 0 — не стоит", ex: `if(GetVehicleInSlotComponent(carid, 6760)) { }` },
+  { n: "RemoveAttachComponent", sig: "RemoveAttachComponent(carid, component)", d: "Снимает деталь.", p: [["component", "модель детали"]], r: "1, или 0 если такой детали нет", ex: `RemoveAttachComponent(carid, 6760);` },
+  { n: "SetVinylCustomization", sig: "SetVinylCustomization(carid, type, color)", d: "Винил на кузове.", p: [["type", "винил 0–17"], ["color", "цвет 0–255"]], r: "1", ex: `SetVinylCustomization(carid, 3, 1);` },
+  { n: "VehicleToneCustomizer", sig: "VehicleToneCustomizer(carid, type, red_color, green_color, blue_color, brigh_size, bool:status = true)", d: "Тонировка стёкол и фар.", p: [["type", "VEHICLE_TONER_* (0–6): стёкла, фары, заднее стекло"], ["red/green/blue", "цвет 0–255"], ["brigh_size", "плотность"], ["status", "false — снять"]], r: "1", ex: `VehicleToneCustomizer(carid, VEHICLE_TONER_REAR_GLASS, 0, 0, 0, 200);` },
+  { n: "CustomizeWheelSettings", sig: "CustomizeWheelSettings(carid, type, Float:corner_wheel, Float:drop_wheel)", d: "Развал и вынос колёс.", p: [["type", "0 — передние, 1 — задние"], ["corner_wheel", "угол развала −15…15"], ["drop_wheel", "вынос −0.1…0.1"]], r: "1, или 0 вне диапазона", ex: `CustomizeWheelSettings(carid, 1, 8.0, 0.05);` },
+  { n: "CustomizeWheelSize", sig: "CustomizeWheelSize(carid, Float:size_wheel = 0.85)", d: "Размер колёс.", p: [["size_wheel", "0.0–1.05"]], r: "1, или 0 вне диапазона", ex: `CustomizeWheelSize(carid, 0.95);` },
+  { n: "SetVehicleColorWheel", sig: "SetVehicleColorWheel(carid, color)", d: "Цвет дисков. Работает только с дисками лаунчера.", p: [["color", "0–255"]], r: "1, или 0 если диски не из лаунчера", ex: `SetVehicleColorWheel(carid, 3);` },
+  { n: "NeonColorChange", sig: "NeonColorChange(carid, color)", d: "Неон под машиной.", p: [["color", "1–255, 0 — выключить"]], r: "1", ex: `NeonColorChange(carid, 79);` },
+  { n: "SmokeColorShift", sig: "SmokeColorShift(carid, color)", d: "Цвет дыма из-под колёс.", p: [["color", "0–255"]], r: "1", ex: `SmokeColorShift(carid, 3);` },
+  { n: "SetColorHeadlamp", sig: "SetColorHeadlamp(carid, color)", d: "Цвет фар.", p: [["color", "0–255"]], r: "1", ex: `SetColorHeadlamp(carid, 6);` },
+  { n: "SetShotsExhaust", sig: "SetShotsExhaust(carid, bool:status)", d: "Отстрел огня из выхлопа.", p: [["status", "true — включить"]], r: "1", ex: `SetShotsExhaust(carid, true);` },
+  { n: "InstallNumberVehicle", sig: "InstallNumberVehicle(carid, type, const number[], const region[])", d: "Номерной знак.", p: [["type", "тип номера 0–51"], ["number", "номер, до 9 символов"], ["region", "регион"]], r: "1", ex: `InstallNumberVehicle(carid, 3, "2122BP", "AC");` },
+  { n: "SetVehicleHidraulics", sig: "SetVehicleHidraulics(carid, type)", d: "Гидравлика: поднять или опустить машину.", p: [["type", "VEHICLE_HYDRAULICS_OFF, _HIGH, _LOW"]], r: "1", ex: `SetVehicleHidraulics(carid, VEHICLE_HYDRAULICS_LOW);` },
+ ]},
+ { id: "handling", title: "Хендлинг", lead: "Как машина едет: скорость, разгон, тормоза, сцепление, подвеска. Значения можно брать из handling.cfg, который лежит в папке scriptfiles.", fns: [
+  { n: "Handling_Load", sig: "Handling_Load(const file[] = MODGEAR_HANDLING_FILE)", d: "Загружает handling.cfg из scriptfiles. По умолчанию путь берётся из инклуда — его можно поменять до #include.", p: [["file", "путь внутри scriptfiles"]], r: "число загруженных машин, -1 — файл не найден",
+    ex: `#define MODGEAR_HANDLING_FILE "cars/handling.cfg"\n#include <ModGear>\n\npublic OnGameModeInit()\n{\n    printf("handling: %d машин", Handling_Load());\n    return 1;\n}` },
+  { n: "Handling_GetParam", sig: "Handling_GetParam(const name[], const field[], &Float:value)", d: "Читает параметр машины из загруженного файла.", p: [["name", "имя машины в файле, например BUGDIVO"], ["field", "поле из таблицы ниже"], ["value", "сюда запишется значение"]], r: "1, или 0 если нет машины или поля",
+    ex: `new Float:speed;\nHandling_GetParam("BUGDIVO", "maxspeed", speed);` },
+  { n: "Handling_SetParam", sig: "Handling_SetParam(const name[], const field[], Float:value)", d: "Меняет параметр в загруженном файле (в памяти, файл не перезаписывается). Следующий SetVehicleHandlingFromCfg возьмёт новое значение.", p: [], r: "1, или 0 если нет машины или поля",
+    ex: `Handling_SetParam("BUGDIVO", "brake", 20.0);` },
+  { n: "SetVehicleHandling", sig: "SetVehicleHandling(carid, const field[], Float:value)", d: "Ставит машине один параметр.", p: [["field", "поле из таблицы ниже"]], r: "1, или 0 если машины нет или поле не поддерживается",
+    ex: `SetVehicleHandling(carid, "maxspeed", 171.2);\nSetVehicleHandling(carid, "brake", 5.4);` },
+  { n: "GetVehicleHandling", sig: "GetVehicleHandling(carid, const field[], &Float:value)", d: "Узнаёт, что выставлено машине через ModGear.", p: [], r: "1, или 0 если параметр не задавали",
+    ex: `new Float:v;\nif(GetVehicleHandling(carid, "maxspeed", v)) printf("%.1f", v);` },
+  { n: "SetVehicleHandlingFromCfg", sig: "SetVehicleHandlingFromCfg(carid, const name[])", d: "Ставит машине все параметры другой машины из файла.", p: [["name", "имя машины в файле"]], r: "1, или 0 если машины нет в файле",
+    ex: `SetVehicleHandlingFromCfg(carid, "CHIRON");` },
+  { n: "CopyVehicleHandling", sig: "CopyVehicleHandling(fromcarid, tocarid)", d: "Копирует выставленный хендлинг с одной машины на другую.", p: [], r: "1, или 0 если у первой машины ничего не задано",
+    ex: `CopyVehicleHandling(GetPlayerVehicleID(adminid), carid);` },
+  { n: "ResetVehicleHandling", sig: "ResetVehicleHandling(carid)", d: "Забывает выставленный хендлинг. У игроков, которые уже видят машину, он останется, пока машина у них не перезагрузится.", p: [], r: "1",
+    ex: `ResetVehicleHandling(carid);` },
+ ], table: "handling" },
+ { id: "audio", title: "Звук", lead: "Музыка в машине, у игрока и в точке на карте. Сначала создаётся звук и возвращается audioID, потом по нему включается трек.", fns: [
+  { n: "Audio_AttachStreamToVehicle", sig: "Audio_AttachStreamToVehicle(vehicleid)", d: "Звук в машине — слышат сидящие внутри и рядом.", p: [], r: "audioID; если у машины звук уже есть — его audioID; -1 — машины нет",
+    ex: `new id = Audio_AttachStreamToVehicle(carid);\nAudio_UpdateAudioStreamID(id, "https://example.com/track.mp3");` },
+  { n: "Audio_AttachStreamToPlayer", sig: "Audio_AttachStreamToPlayer(playerid)", d: "Звук у игрока.", p: [], r: "audioID или -1", ex: `new id = Audio_AttachStreamToPlayer(playerid);` },
+  { n: "Audio_CreateStreamAtPos", sig: "Audio_CreateStreamAtPos(Float:x, Float:y, Float:z, Float:radius = 50.0)", d: "Звук в точке на карте — колонка. Слышно в радиусе.", p: [["radius", "0–1000 метров"]], r: "audioID или -1",
+    ex: `new Float:x, Float:y, Float:z;\nGetPlayerPos(playerid, x, y, z);\nnew id = Audio_CreateStreamAtPos(x, y, z, 40.0);\nAudio_UpdateAudioStreamID(id, "https://example.com/track.mp3");` },
+  { n: "Audio_UpdateAudioStreamID", sig: "Audio_UpdateAudioStreamID(audioID, const urlmp3[], playtime = 0)", d: "Включает трек.", p: [["urlmp3", "прямая ссылка на mp3"], ["playtime", "с какой секунды, 0–100000"]], r: "1, или 0 если audioID не существует", ex: `Audio_UpdateAudioStreamID(id, "https://example.com/track.mp3", 30);` },
+  { n: "Audio_StopStream", sig: "Audio_StopStream(audioID)", d: "Ставит трек на паузу.", p: [], r: "1, или 0 если уже на паузе", ex: `Audio_StopStream(id);` },
+  { n: "Audio_PlayStream", sig: "Audio_PlayStream(audioID)", d: "Продолжает трек после паузы.", p: [], r: "1, или 0 если уже играет", ex: `Audio_PlayStream(id);` },
+  { n: "Audio_IsStreamPlaying", sig: "Audio_IsStreamPlaying(audioID)", d: "Проверяет, играет ли трек.", p: [], r: "1 — играет, 0 — пауза или нет звука", ex: `if(Audio_IsStreamPlaying(id)) { }` },
+  { n: "Audio_GetStreamTime", sig: "Audio_GetStreamTime(audioID)", d: "Сколько секунд прошло с начала трека.", p: [], r: "секунды, 0 если звука нет", ex: `new sec = Audio_GetStreamTime(id);` },
+  { n: "Audio_SetStreamTime", sig: "Audio_SetStreamTime(audioID, time)", d: "Перематывает трек.", p: [["time", "секунда 0–100000"]], r: "1", ex: `Audio_SetStreamTime(id, 60);` },
+  { n: "Audio_GetVehicleStreamID", sig: "Audio_GetVehicleStreamID(vehicleid)", d: "audioID звука машины.", p: [], r: "audioID или -1", ex: `new id = Audio_GetVehicleStreamID(carid);` },
+  { n: "Audio_GetPlayerStreamID", sig: "Audio_GetPlayerStreamID(playerid)", d: "audioID звука игрока.", p: [], r: "audioID или -1", ex: `new id = Audio_GetPlayerStreamID(playerid);` },
+  { n: "Audio_DestroyStream", sig: "Audio_DestroyStream(audioID)", d: "Удаляет звук. Звук машины удаляется сам, когда машина удалена; звук игрока — при выходе.", p: [], r: "1, или 0 если audioID не существует", ex: `Audio_DestroyStream(id);` },
+ ]},
+ { id: "video", title: "Видео на экране", lead: "Кинотеатр: YouTube, Twitch или любая страница на объекте-экране. Видео видят игроки с лаунчером рядом с экраном; кто отошёл — у того выключается, вернулся — продолжается с того же места.", fns: [
+  { n: "Video_CreateAtObject", sig: "Video_CreateAtObject(objectid, Float:distance = 40.0, material = 5)", d: "Делает экран из уже созданного объекта. Экраном работает модель 7914 — как в кинотеатре Arizona.", p: [["objectid", "объект из CreateObject"], ["distance", "радиус, в котором видно видео"], ["material", "слот текстуры экрана, у модели 7914 — 5"]], r: "id видео, 0 — объекта нет",
+    ex: `new kinema = CreateObject(7914, 1278.93, 1311.16, 13.15, 0.0, 0.0, -0.2);\nnew kino = Video_CreateAtObject(kinema, 40.0);` },
+  { n: "Video_Create", sig: "Video_Create(modelid, Float:x, Float:y, Float:z, Float:distance = 40.0, material = 5)", d: "То же по модели и координатам экрана. Клиент сам находит рядом объект этой модели.", p: [["modelid", "модель экрана"], ["x, y, z", "где стоит экран"]], r: "id видео или 0", ex: `new kino = Video_Create(7914, 1278.93, 1311.16, 13.15);` },
+  { n: "Video_Play", sig: "Video_Play(videoid, const url[], start = 0)", d: "Включает ссылку. Обычные ссылки YouTube (watch, youtu.be, shorts) и Twitch-каналы сами переводятся в плеер.", p: [["url", "ссылка на видео, стрим или страницу"], ["start", "с какой секунды"]], r: "1, или 0 если экрана нет",
+    ex: `Video_Play(kino, "https://www.youtube.com/watch?v=lnvy9W_Z5MY");\nVideo_Play(kino, "https://www.twitch.tv/cs2_maincast");` },
+  { n: "Video_Stop", sig: "Video_Stop(videoid)", d: "Останавливает видео у всех.", p: [], r: "1, или 0 если экрана нет", ex: `Video_Stop(kino);` },
+  { n: "Video_GetTime", sig: "Video_GetTime(videoid)", d: "Сколько секунд идёт видео.", p: [], r: "секунды, -1 — не играет", ex: `new sec = Video_GetTime(kino);` },
+  { n: "Video_Destroy", sig: "Video_Destroy(videoid)", d: "Останавливает и удаляет экран. Сам объект не удаляется.", p: [], r: "1, или 0 если экрана нет", ex: `Video_Destroy(kino);` },
+ ]},
+ { id: "other", title: "Прочее", lead: "Хранение строк в числах и замена моделей для игроков без лаунчера.", fns: [
+  { n: "ConvertedStringInt", alfa: 1, sig: "ConvertedStringInt(&key_1, &key_2, &key_3, const text[])", d: "Упаковывает короткую строку в три числа — удобно хранить в БД.", p: [["text", "строка до 19 символов"]], r: "1", ex: `new a, b, c;\nConvertedStringInt(a, b, c, "Nick");` },
+  { n: "ConvertedIntString", alfa: 1, sig: "ConvertedIntString(key_1, key_2, key_3, const text[])", d: "Собирает строку обратно из трёх чисел.", p: [["text", "массив, куда записать строку"]], r: "1", ex: `new name[20];\nConvertedIntString(a, b, c, name);` },
+  { n: "GetCustomVehicle", alfa: 1, cb: 1, sig: "public GetCustomVehicle(veh)", d: "Колбэк в инклуде. Плагин спрашивает, какую стандартную модель показать игроку без лаунчера вместо модели лаунчера. Добавьте свои case.", p: [["veh", "модель лаунчера"]], r: "стандартная модель или -1", ex: `case 3201: defaultveh = 411; // Bugatti Divo -> Infernus` },
+  { n: "GetCustomSkin", alfa: 1, cb: 1, sig: "public GetCustomSkin(skin)", d: "То же для скинов.", p: [], r: "стандартный скин или -1", ex: `case 312: defaultskin = 102;` },
+  { n: "GetCustomIcon", alfa: 1, cb: 1, sig: "public GetCustomIcon(icon)", d: "То же для иконок на карте.", p: [], r: "стандартная иконка или -1", ex: `case 87: defaulticon = 6;` },
+ ]},
+];
+
+const CUSTOM = [
+ ["Custom_Speedometer", "0 выкл · 1–2 мобильный · 3 продвинутый · 4 упрощённый"],
+ ["Custom_Hud", "0 выкл · 1 PUBG · 2 Vice City · 3 San Andreas · 4–6 мобильные"],
+ ["Custom_Radar", "0 выкл · 1–2 свой · 3 Vice City"],
+ ["Custom_Fuel", "0–300 — литры на спидометре"],
+ ["Custom_Milage", "0–999999 — пробег"],
+ ["Custom_TypeFuel", "0 бензин · 1 электро · 2 скрыть значок"],
+ ["Custom_Hunger", "0–100 — сытость"],
+ ["Custom_Hints", "0/1 — подсказка горячих клавиш (клавиши — UpdateInfoHotKey)"],
+ ["Custom_TypeDialog", "0 полный · 1 упрощённый · 2 простой"],
+ ["Custom_Map", "0/1 — зеркальная карта"],
+ ["Custom_Discord", "0/1 — показывать позицию в Discord"],
+ ["Custom_Dialog", "0/1 — сохранять текст в диалогах"],
+ ["Custom_Chat", "0/1 — прозрачный чат"],
+ ["Custom_SetRadius", "0–500 — дальность видимости 3D-текста, 0 — стандартная"],
+ ["Custom_Show", "0/1 — снегопад"],
+ ["Custom_Wanted", "0–7 — уровень розыска на худе"],
+ ["Custom_ChatBoard", "0/1 — текст над игроками"],
+ ["Custom_WallHack", "0/1 — видеть игроков сквозь стены"],
+ ["Custom_TypeAim", "0 стандартный · 1–10 свой прицел"],
+ ["Custom_GeoPosition", "0/1 — текущее местоположение на худе"],
+ ["Custom_CinemaMode", "0/1 — кинорежим, худ скрыт"],
+];
+
+// поле, короткое имя, что делает, значение у Bugatti Divo на Arizona, уверенность
+const HFIELDS = [
+ ["fMaxVelocity", "maxspeed", "Максимальная скорость", "171.2", 1],
+ ["fEngineAcceleration", "acceleration", "Разгон. Больше — резвее", "25.1", 1],
+ ["fEngineInertia", "inertia", "Инерция мотора. Больше — медленнее набирает и сбрасывает обороты", "—", 1],
+ ["fBrakeDeceleration", "brake", "Сила тормозов", "5.41", 1],
+ ["fTractionMultiplier", "traction", "Сцепление шин. Больше — меньше заносит", "0.993", 1],
+ ["fSteeringLock", "steering", "Угол поворота колёс, 10–40", "—", 1],
+ ["fSuspensionForceLevel", "suspforce · suspension", "Подвеска: жёсткость и высота (её же меняет гидравлика)", "—", 1],
+ ["fTractionLoss", "tractionloss", "Потеря сцепления при пробуксовке", "—", 0],
+ ["fTractionBias", "tractionbias", "Баланс сцепления: ближе к 1 — держит перёд, к 0 — зад", "—", 0],
+ ["fBrakeBias", "brakebias", "Баланс тормозов перёд/зад", "—", 0],
+ ["fSuspensionDampingLevel", "suspdamping", "Демпфирование: как быстро гасит раскачку", "—", 0],
+ ["fSuspensionHighSpdComDamp", "susphighspd", "Демпфирование на скорости", "—", 0],
+ ["fSuspensionUpperLimit", "suspupper", "Ход подвески вверх", "—", 0],
+ ["fSuspensionLowerLimit", "susplower", "Ход подвески вниз", "—", 0],
+ ["fSuspensionBias", "suspbias", "Баланс подвески перёд/зад", "—", 0],
+ ["fSuspensionAntiDive", "antidive", "Насколько машина «клюёт» носом при торможении", "—", 0],
+];
+
+// ---------- вывод ----------
+const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+function hl(code) {
+  // простая подсветка Pawn: комментарии, строки, числа, ключевые слова
+  return esc(code).replace(/(\/\/[^\n]*)|("(?:[^"\\]|\\.)*")|\b(new|public|if|return|case|native|forward|Float|bool|true|false|#define|#include)\b|\b(\d+(?:\.\d+)?)\b/g,
+    (m, c, s, k, n) => c ? `<span class="c">${c}</span>` : s ? `<span class="s">${s}</span>` : k ? `<span class="k">${k}</span>` : `<span class="n">${n}</span>`);
+}
+function customTable() {
+  return `<div class="tbl"><table><thead><tr><th>index</th><th>type</th></tr></thead><tbody>${CUSTOM.map(([a, b]) => `<tr><td class="m">${a}</td><td>${b}</td></tr>`).join("")}</tbody></table></div>`;
+}
+function handlingTable() {
+  return `<h3 style="font-family:var(--f-display);font-weight:500;font-size:16px;margin:24px 0 6px">Поля хендлинга</h3>
+  <p class="lead" style="margin:0 0 12px;color:var(--muted)">В <code>field</code> можно писать любое из двух имён. <span class="dot"></span>проверено по серверу Arizona, <span class="dot q"></span>по порядку полей, проверьте в игре.</p>
+  <div class="tbl"><table><thead><tr><th>Поле</th><th>Коротко</th><th>Что меняет</th><th>Divo</th></tr></thead><tbody>${HFIELDS.map(([f, s, d, v, ok]) =>
+    `<tr><td class="m"><span class="dot${ok ? "" : " q"}"></span>${f}</td><td class="m">${s}</td><td>${d}</td><td class="num">${v}</td></tr>`).join("")}</tbody></table></div>`;
+}
+function fnCard(f) {
+  const params = f.p.length ? `<dl class="params">${f.p.map(([a, b]) => `<dt>${esc(a)}</dt><dd>${esc(b)}</dd>`).join("")}</dl>` : "";
+  return `<article class="fn" id="${f.n}" data-s="${(f.n + " " + f.d).toLowerCase()}">
+    <h3>${f.n}${f.cb ? ` <span class="tag">колбэк</span>` : ""}${f.alfa ? ` <span class="tag alfa">Alfa</span>` : ""}</h3>
+    <p class="desc">${esc(f.d)}</p>
+    <pre><code>${hl(f.sig)}</code></pre>
+    ${params}
+    <div class="ret"><span>Возвращает</span><span>${esc(f.r)}</span></div>
+    <p class="ex-label">Пример</p>
+    <pre><code>${hl(f.ex)}</code></pre>
+    ${f.table === "custom" ? `<div style="margin-top:14px">${customTable()}</div>` : ""}
+  </article>`;
+}
+document.getElementById("content").outerHTML = SECTIONS.map(s => `
+  <section id="${s.id}">
+    <h2>${s.title}</h2>
+    <p class="lead">${esc(s.lead)}</p>
+    <div class="fns">${s.fns.map(fnCard).join("")}</div>
+    ${s.table === "handling" ? handlingTable() : ""}
+  </section>`).join("") + `<p class="empty" id="none" hidden>Ничего не найдено.</p>`;
+
+document.getElementById("nav").innerHTML = `<a href="#start">Начало работы</a>` + SECTIONS.map(s =>
+  `<span class="grp">${s.title}</span>${s.fns.map(f => `<a class="fnl" href="#${f.n}">${f.n}</a>`).join("")}`).join("");
+// на телефоне вместо функций — ссылки на разделы
+document.querySelectorAll("nav .grp").forEach((g, i) => {
+  const a = document.createElement("a"); a.href = "#" + SECTIONS[i].id; a.textContent = SECTIONS[i].title; a.className = "secl";
+  g.after(a);
+});
+const style = document.createElement("style");
+style.textContent = "nav a.secl{display:none} @media (max-width:860px){nav a.secl{display:inline-block} nav .grp{display:none}}";
+document.head.appendChild(style);
+
+// поиск
+const q = document.getElementById("q");
+q.addEventListener("input", () => {
+  const v = q.value.trim().toLowerCase();
+  let shown = 0;
+  document.querySelectorAll("article.fn").forEach(a => { const ok = !v || a.dataset.s.includes(v); a.hidden = !ok; shown += ok; });
+  document.querySelectorAll("main section").forEach(s => { s.hidden = v && !s.querySelector("article.fn:not([hidden])"); });
+  document.querySelectorAll("nav a.fnl").forEach(a => { a.hidden = v && !a.getAttribute("href").slice(1).toLowerCase().includes(v) && document.getElementById(a.getAttribute("href").slice(1)).hidden; });
+  document.getElementById("none").hidden = shown > 0;
+});
+
+// тема
+const root = document.documentElement;
+function setTheme(t) {
+  if (t === "system") root.removeAttribute("data-theme"); else root.setAttribute("data-theme", t);
+  document.querySelectorAll(".theme button").forEach(b => b.setAttribute("aria-pressed", b.dataset.t === t));
+  try { localStorage.setItem("mg-theme", t); } catch (e) {}
+}
+document.querySelectorAll(".theme button").forEach(b => b.addEventListener("click", () => setTheme(b.dataset.t)));
+let saved = "system";
+try { saved = localStorage.getItem("mg-theme") || "system"; } catch (e) {}
+setTheme(saved);
+</script>
+
+</body>
+</html>
