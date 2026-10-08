@@ -52,7 +52,10 @@ a { color: var(--accent); }
 aside { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); align-self: start; max-height: calc(100vh - 32px); overflow: auto; display: flex; flex-direction: column; gap: 14px; }
 .brand { font-family: var(--f-display); font-weight: 700; font-size: 22px; letter-spacing: -0.01em; display: flex; align-items: baseline; gap: 8px; }
 .brand small { font-family: var(--f-mono); font-weight: 400; font-size: 11px; color: var(--muted); letter-spacing: 0.02em; }
-#q { width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font: inherit; }
+#q { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font: inherit; transition: border-color .15s, box-shadow .15s; }
+#q::placeholder { color: var(--muted); }
+#q:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+#q::-webkit-search-cancel-button { cursor: pointer; }
 nav { display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
 nav .grp { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-top: 10px; padding-inline: 8px; }
 nav a { color: var(--ink); text-decoration: none; padding: 3px 8px; border-radius: 6px; font-family: var(--f-mono); font-size: 12.5px; overflow-wrap: anywhere; }
@@ -391,6 +394,17 @@ q.addEventListener("input", () => {
   document.querySelectorAll("main section").forEach(s => { s.hidden = v && !s.querySelector("article.fn:not([hidden])"); });
   document.querySelectorAll("nav a.fnl").forEach(a => { a.hidden = v && !a.getAttribute("href").slice(1).toLowerCase().includes(v) && document.getElementById(a.getAttribute("href").slice(1)).hidden; });
   document.getElementById("none").hidden = shown > 0;
+});
+
+// клики по ссылкам-якорям: прокрутка внутри страницы, без перехода по адресу
+// (под htmlpreview базовый адрес = сырой файл, и обычный переход открыл бы исходник)
+document.addEventListener("click", e => {
+  const a = e.target.closest('a[href^="#"]');
+  if (!a) return;
+  const el = document.getElementById(a.getAttribute("href").slice(1));
+  if (!el) return;
+  e.preventDefault();
+  el.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
 // тема
