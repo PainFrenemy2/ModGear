@@ -80,6 +80,10 @@ article.fn { background: var(--panel); border: 1px solid var(--line); border-rad
 pre { margin: 0; background: var(--code-bg); color: var(--code-ink); border-radius: 8px; padding: 12px 14px; overflow-x: auto; font-family: var(--f-mono); font-size: 13px; line-height: 1.5; }
 code { font-family: var(--f-mono); font-size: 0.92em; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
 pre code { background: none; padding: 0; }
+/* код внутри текста переносится, а не вылезает за карточку */
+p code, dd code, .step code, td code, .ret code { overflow-wrap: anywhere; word-break: break-word; }
+dl.params dt { overflow-wrap: anywhere; }
+.step, .fn, .desc, dd { min-width: 0; }
 .k { color: var(--kw); } .s { color: var(--str); } .n { color: var(--num); } .c { color: var(--muted); font-style: italic; }
 dl.params { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 16px; margin: 12px 0; font-size: 14px; }
 dl.params dt { font-family: var(--f-mono); font-size: 13px; color: var(--ink); }
@@ -225,13 +229,27 @@ const SECTIONS = [
   { n: "ResetVehicleHandling", sig: "ResetVehicleHandling(carid)", d: "Забывает выставленный хендлинг. У игроков, которые уже видят машину, он останется, пока машина у них не перезагрузится.", p: [], r: "1",
     ex: `ResetVehicleHandling(carid);` },
  ], table: "handling" },
- { id: "audio", title: "Звук", lead: "Музыка в машине, у игрока и в точке на карте. Сначала создаётся звук и возвращается audioID, потом по нему включается трек.", fns: [
+ { id: "media", title: "Медиасервер", lead: "Нужен, чтобы в музыку можно было давать ссылки YouTube: плагин сам скачивает звук, делает mp3 и раздаёт его игрокам. Ещё он узнаёт длину треков и видео. Рядом с сервером должны лежать yt-dlp и ffmpeg (на Windows — yt-dlp.exe, ffmpeg.exe, ffprobe.exe), а порт должен быть открыт.", fns: [
+  { n: "Media_Init", sig: "Media_Init(port = MODGEAR_MEDIA_PORT, const host[] = \"\")", d: "Запускает медиасервер. Первый запуск трека качается и сразу играет потоком, повторные идут из кэша scriptfiles/modgear_media мгновенно.", p: [["port", "TCP-порт, по умолчанию 7780; откройте его в фаерволе"], ["host", "внешний IP сервера; пусто — плагин узнает сам"]], r: "1, или 0 если порт занят",
+    ex: `public OnGameModeInit()
+{
+    Media_Init();
+    return 1;
+}` },
+ ]},
+ { id: "audio", title: "Звук", lead: "Музыка в машине, у игрока и в точке на карте. Сначала создаётся звук и возвращается audioID, потом по нему включается трек: прямая ссылка на mp3 или YouTube (после Media_Init).", fns: [
   { n: "Audio_AttachStreamToVehicle", sig: "Audio_AttachStreamToVehicle(vehicleid)", d: "Звук в машине — слышат сидящие внутри и рядом.", p: [], r: "audioID; если у машины звук уже есть — его audioID; -1 — машины нет",
     ex: `new id = Audio_AttachStreamToVehicle(carid);\nAudio_UpdateAudioStreamID(id, "https://example.com/track.mp3");` },
   { n: "Audio_AttachStreamToPlayer", sig: "Audio_AttachStreamToPlayer(playerid)", d: "Звук у игрока.", p: [], r: "audioID или -1", ex: `new id = Audio_AttachStreamToPlayer(playerid);` },
   { n: "Audio_CreateStreamAtPos", sig: "Audio_CreateStreamAtPos(Float:x, Float:y, Float:z, Float:radius = 50.0)", d: "Звук в точке на карте — колонка. Слышно в радиусе.", p: [["radius", "0–1000 метров"]], r: "audioID или -1",
     ex: `new Float:x, Float:y, Float:z;\nGetPlayerPos(playerid, x, y, z);\nnew id = Audio_CreateStreamAtPos(x, y, z, 40.0);\nAudio_UpdateAudioStreamID(id, "https://example.com/track.mp3");` },
-  { n: "Audio_UpdateAudioStreamID", sig: "Audio_UpdateAudioStreamID(audioID, const urlmp3[], playtime = 0)", d: "Включает трек.", p: [["urlmp3", "прямая ссылка на mp3"], ["playtime", "с какой секунды, 0–100000"]], r: "1, или 0 если audioID не существует", ex: `Audio_UpdateAudioStreamID(id, "https://example.com/track.mp3", 30);` },
+  { n: "Audio_UpdateAudioStreamID", sig: "Audio_UpdateAudioStreamID(audioID, const urlmp3[], playtime = 0)", d: "Включает трек. Ссылку YouTube плагин сам превращает в mp3 со своего медиасервера.", p: [["urlmp3", "прямая ссылка на mp3 или ссылка YouTube"], ["playtime", "с какой секунды, 0–100000"]], r: "1, или 0 если audioID не существует или для YouTube не вызван Media_Init", ex: `Audio_UpdateAudioStreamID(id, "https://www.youtube.com/watch?v=3SHdUOIfPag");` },
+  { n: "Audio_GetDuration", sig: "Audio_GetDuration(audioID)", d: "Длина трека. Узнаётся в фоне за пару секунд после включения.", p: [], r: "секунды, -1 — ещё узнаём или неизвестна", ex: `new len = Audio_GetDuration(id);` },
+  { n: "OnAudioStreamFinished", cb: 1, sig: "public OnAudioStreamFinished(audioID)", d: "Вызывается, когда трек доиграл до конца (если его длина известна). Удобно включать следующий трек.", p: [["audioID", "звук, который закончился"]], r: "—", ex: `public OnAudioStreamFinished(audioID)
+{
+    Audio_UpdateAudioStreamID(audioID, NextTrack());
+    return 1;
+}` },
   { n: "Audio_StopStream", sig: "Audio_StopStream(audioID)", d: "Ставит трек на паузу.", p: [], r: "1, или 0 если уже на паузе", ex: `Audio_StopStream(id);` },
   { n: "Audio_PlayStream", sig: "Audio_PlayStream(audioID)", d: "Продолжает трек после паузы.", p: [], r: "1, или 0 если уже играет", ex: `Audio_PlayStream(id);` },
   { n: "Audio_IsStreamPlaying", sig: "Audio_IsStreamPlaying(audioID)", d: "Проверяет, играет ли трек.", p: [], r: "1 — играет, 0 — пауза или нет звука", ex: `if(Audio_IsStreamPlaying(id)) { }` },
@@ -242,13 +260,20 @@ const SECTIONS = [
   { n: "Audio_DestroyStream", sig: "Audio_DestroyStream(audioID)", d: "Удаляет звук. Звук машины удаляется сам, когда машина удалена; звук игрока — при выходе.", p: [], r: "1, или 0 если audioID не существует", ex: `Audio_DestroyStream(id);` },
  ]},
  { id: "video", title: "Видео на экране", lead: "Кинотеатр: YouTube, Twitch или любая страница на объекте-экране. Видео видят игроки с лаунчером рядом с экраном; кто отошёл — у того выключается, вернулся — продолжается с того же места.", fns: [
-  { n: "Video_CreateAtObject", sig: "Video_CreateAtObject(objectid, Float:distance = 40.0, material = 5)", d: "Делает экран из уже созданного объекта. Экраном работает модель 7914 — как в кинотеатре Arizona.", p: [["objectid", "объект из CreateObject"], ["distance", "радиус, в котором видно видео"], ["material", "слот текстуры экрана, у модели 7914 — 5"]], r: "id видео, 0 — объекта нет",
-    ex: `new kinema = CreateObject(7914, 1278.93, 1311.16, 13.15, 0.0, 0.0, -0.2);\nnew kino = Video_CreateAtObject(kinema, 40.0);` },
-  { n: "Video_Create", sig: "Video_Create(modelid, Float:x, Float:y, Float:z, Float:distance = 40.0, material = 5)", d: "То же по модели и координатам экрана. Клиент сам находит рядом объект этой модели.", p: [["modelid", "модель экрана"], ["x, y, z", "где стоит экран"]], r: "id видео или 0", ex: `new kino = Video_Create(7914, 1278.93, 1311.16, 13.15);` },
-  { n: "Video_Play", sig: "Video_Play(videoid, const url[], start = 0)", d: "Включает ссылку. Обычные ссылки YouTube (watch, youtu.be, shorts) и Twitch-каналы сами переводятся в плеер.", p: [["url", "ссылка на видео, стрим или страницу"], ["start", "с какой секунды"]], r: "1, или 0 если экрана нет",
+  { n: "Video_Create", sig: "Video_Create(objectid, modelid = 7914, Float:distance = 40.0)", d: "Делает экран из уже созданного объекта: видео рисуется прямо на нём. Координаты берутся из объекта сами. Экраном работает модель 7914 — как в кинотеатре Arizona.", p: [["objectid", "объект из CreateObject"], ["modelid", "модель этого объекта, обычно 7914"], ["distance", "радиус, в котором видно видео"]], r: "id видео, 0 — объекта нет",
+    ex: `new kinema = CreateObject(7914, 1278.93, 1311.16, 13.15, 0.0, 0.0, -0.2);\nnew kino = Video_Create(kinema, 7914, 40.0);` },
+  { n: "Video_Play", sig: "Video_Play(videoid, const url[], start = 0)", d: "Включает ссылку. YouTube (любая ссылка) идёт через плеер Arizona, Twitch-канал — через плеер Twitch. Чтобы сменить видео, просто вызовите Video_Play с новой ссылкой.", p: [["url", "ссылка на видео, стрим или страницу"], ["start", "с какой секунды"]], r: "1, или 0 если экрана нет",
     ex: `Video_Play(kino, "https://www.youtube.com/watch?v=lnvy9W_Z5MY");\nVideo_Play(kino, "https://www.twitch.tv/cs2_maincast");` },
   { n: "Video_Stop", sig: "Video_Stop(videoid)", d: "Останавливает видео у всех.", p: [], r: "1, или 0 если экрана нет", ex: `Video_Stop(kino);` },
-  { n: "Video_GetTime", sig: "Video_GetTime(videoid)", d: "Сколько секунд идёт видео.", p: [], r: "секунды, -1 — не играет", ex: `new sec = Video_GetTime(kino);` },
+  { n: "Video_IsPlaying", sig: "Video_IsPlaying(videoid)", d: "Проверяет, идёт ли видео.", p: [], r: "1 — идёт, 0 — нет", ex: `if(Video_IsPlaying(kino)) { }` },
+  { n: "Video_GetTime", sig: "Video_GetTime(videoid)", d: "Сколько секунд видео уже идёт.", p: [], r: "секунды, -1 — не играет", ex: `new sec = Video_GetTime(kino);` },
+  { n: "Video_GetDuration", sig: "Video_GetDuration(videoid)", d: "Длина видео. Для YouTube узнаётся в фоне (нужен yt-dlp), у стримов длины нет.", p: [], r: "секунды, -1 — стрим или ещё узнаём", ex: `printf("%d из %d", Video_GetTime(kino), Video_GetDuration(kino));` },
+  { n: "Video_SetTime", sig: "Video_SetTime(videoid, seconds)", d: "Перематывает видео у всех, кто смотрит.", p: [["seconds", "секунда, с которой продолжить"]], r: "1, или 0 если видео не идёт", ex: `Video_SetTime(kino, 120);` },
+  { n: "OnVideoFinished", cb: 1, sig: "public OnVideoFinished(videoid)", d: "Вызывается, когда видео дошло до конца.", p: [["videoid", "видео, которое закончилось"]], r: "—", ex: `public OnVideoFinished(videoid)
+{
+    SendClientMessageToAll(-1, "Фильм закончился");
+    return 1;
+}` },
   { n: "Video_Destroy", sig: "Video_Destroy(videoid)", d: "Останавливает и удаляет экран. Сам объект не удаляется.", p: [], r: "1, или 0 если экрана нет", ex: `Video_Destroy(kino);` },
  ]},
  { id: "other", title: "Прочее", lead: "Хранение строк в числах и замена моделей для игроков без лаунчера.", fns: [

@@ -14,7 +14,7 @@
 ![Linux](https://img.shields.io/badge/Linux-x86-FCC624?style=flat-square&logo=linux&logoColor=black)
 
 [**📥 Скачать**](https://github.com/PainFrenemy2/ModGear/releases/latest) •
-[**📖 Документация**](https://painfrenemy2.github.io/ModGear/docs/) •
+[**📖 Документация**](https://htmlpreview.github.io/?https://raw.githubusercontent.com/PainFrenemy2/ModGear/HEAD/docs/index.html) •
 [**💬 Купить / связь**](https://vk.com/seym2)
 
 </div>
@@ -56,11 +56,11 @@
 
 **SA-MP**
 1. Распакуйте `ModGear-SAMP.zip` в папку сервера.
-2. В `server.cfg`: `plugins ... ModGear` (Linux: `ModGear.so`) и **обязательно** `bind <IP сервера>`.
+2. В `server.cfg`: `plugins ... ModGear` (Linux: `ModGear.so`) и `bind <IP сервера>` (можно не указывать — плагин сам узнает внешний IP).
 
 **open.mp**
 1. Распакуйте `ModGear-openmp.zip` в папку сервера (`components/`).
-2. В `config.json` укажите `"network": { "bind": "<IP сервера>" }`.
+2. В `config.json` можно указать `"network": { "bind": "<IP сервера>" }` (не обязательно — плагин сам узнает внешний IP).
 
 В моде: `#include <ModGear>`.
 
