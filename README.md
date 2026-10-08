@@ -64,6 +64,25 @@
 
 В моде: `#include <ModGear>`.
 
+### 🎵 Радио с YouTube в машине (Audio_)
+
+Чтобы `Audio_`-функции играли ссылки YouTube (они конвертируются в mp3 на сервере),
+положите рядом с сервером две бесплатные программы. Для всего остального (видео, хендлинг,
+интерфейс) они **не нужны**.
+
+**Windows** (`yt-dlp.exe` и `ffmpeg.exe` в папку сервера):
+- yt-dlp — https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe
+- ffmpeg — https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip
+  (из архива `bin/ffmpeg.exe`)
+
+**Linux** (`yt-dlp` и `ffmpeg` рядом с сервером, затем `chmod +x`):
+- yt-dlp — https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux (переименуйте в `yt-dlp`)
+- ffmpeg — https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-linux64-gpl.tar.xz
+  (из архива `bin/ffmpeg`)
+
+Плагин ищет их в папке сервера или в системном PATH. Без них ссылки YouTube в `Audio_` не заиграют
+(в логе будет предупреждение), прямые mp3-ссылки работают и так.
+
 > [!IMPORTANT]
 > Плагин работает только на серверах с активированным доступом (IP + порт).
 > Для подключения: [vk.com/seym2](https://vk.com/seym2)

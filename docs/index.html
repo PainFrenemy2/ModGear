@@ -229,7 +229,11 @@ const SECTIONS = [
   { n: "ResetVehicleHandling", sig: "ResetVehicleHandling(carid)", d: "Забывает выставленный хендлинг. У игроков, которые уже видят машину, он останется, пока машина у них не перезагрузится.", p: [], r: "1",
     ex: `ResetVehicleHandling(carid);` },
  ], table: "handling" },
- { id: "media", title: "Медиасервер", lead: "Нужен, чтобы в музыку можно было давать ссылки YouTube: плагин сам скачивает звук, делает mp3 и раздаёт его игрокам. Ещё он узнаёт длину треков и видео. Рядом с сервером должны лежать yt-dlp и ffmpeg (на Windows — yt-dlp.exe, ffmpeg.exe, ffprobe.exe), а порт должен быть открыт.", fns: [
+ { id: "media", title: "Медиасервер", lead: "Нужен, чтобы в музыку можно было давать ссылки YouTube: плагин сам скачивает звук, делает mp3 и раздаёт его игрокам. Ещё он узнаёт длину треков и видео. Рядом с сервером должны лежать yt-dlp и ffmpeg (на Windows — yt-dlp.exe, ffmpeg.exe, ffprobe.exe), а порт должен быть открыт.", note: `<div class="step" style="margin:0 0 16px"><b>Где взять yt-dlp и ffmpeg</b> (положить рядом с сервером):<br>
+<b>Windows:</b> <a href="https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe">yt-dlp.exe</a> ·
+<a href="https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip">ffmpeg (zip)</a> — из архива <code>bin/ffmpeg.exe</code><br>
+<b>Linux:</b> <a href="https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux">yt-dlp_linux</a> (переименовать в <code>yt-dlp</code>) ·
+<a href="https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-linux64-gpl.tar.xz">ffmpeg (tar.xz)</a> — из архива <code>bin/ffmpeg</code>, затем <code>chmod +x</code></div>`, fns: [
   { n: "Media_Init", sig: "Media_Init(port = MODGEAR_MEDIA_PORT, const host[] = \"\")", d: "Запускает медиасервер. Первый запуск трека качается и сразу играет потоком, повторные идут из кэша scriptfiles/modgear_media мгновенно.", p: [["port", "TCP-порт, по умолчанию 7780; откройте его в фаерволе"], ["host", "внешний IP сервера; пусто — плагин узнает сам"]], r: "1, или 0 если порт занят",
     ex: `public OnGameModeInit()
 {
@@ -362,6 +366,7 @@ document.getElementById("content").outerHTML = SECTIONS.map(s => `
   <section id="${s.id}">
     <h2>${s.title}</h2>
     <p class="lead">${esc(s.lead)}</p>
+    ${s.note || ""}
     <div class="fns">${s.fns.map(fnCard).join("")}</div>
     ${s.table === "handling" ? handlingTable() : ""}
   </section>`).join("") + `<p class="empty" id="none" hidden>Ничего не найдено.</p>`;
