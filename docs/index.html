@@ -176,6 +176,9 @@ const SECTIONS = [
   { n: "SetPlayerGreenZone", sig: "SetPlayerGreenZone(playerid, bool:status)",
     d: "Включает или выключает у игрока режим зелёной зоны Arizona.", p: [["status", "true — в зелёной зоне"]], r: "1, или 0 если игрок без лаунчера",
     ex: `SetPlayerGreenZone(playerid, true);` },
+  { n: "SetPlayerDriftMode", sig: "SetPlayerDriftMode(playerid, bool:status)",
+    d: "Включает подсчёт дрифта у игрока. Пока включено, клиент сам считает очки и присылает их в public OnPlayerDriftScore(playerid, score, multiplier).", p: [["status", "true — включить"]], r: "1, или 0 если игрок без лаунчера",
+    ex: `SetPlayerDriftMode(playerid, true);\n\npublic OnPlayerDriftScore(playerid, score, multiplier)\n{\n    printf("дрифт %d: %d x%d", playerid, score, multiplier);\n    return 1;\n}` },
   { n: "SetPlayerTargetMode", sig: "SetPlayerTargetMode(playerid, mode)",
     d: "Режим отображения цели.", p: [["mode", "0–2"]], r: "1, или 0 при неверном mode или игроке без лаунчера",
     ex: `SetPlayerTargetMode(playerid, 1);` },
@@ -225,7 +228,7 @@ const SECTIONS = [
   { n: "SetVehicleStrobeLights", sig: "SetVehicleStrobeLights(carid, mode, Float:speed = 1.0, bool:beam = false)", d: "Стробоскопы.", p: [["mode", "режим мигания, 0 — выключить"], ["speed", "скорость мигания"], ["beam", "true — с лучом"]], r: "1", ex: `SetVehicleStrobeLights(carid, 1, 1.0, true);` },
   { n: "SetVehicleBrakeCalipers", sig: "SetVehicleBrakeCalipers(carid, modelid, bool:simplemodel = false)", d: "Тормозные суппорты.", p: [["modelid", "модель суппорта, 0 — убрать"], ["simplemodel", "true — simple-модель лаунчера"]], r: "1", ex: `SetVehicleBrakeCalipers(carid, 15001);` },
   { n: "SetVehicleSiren", sig: "SetVehicleSiren(carid, bool:status)", d: "Мигалка и сирена на любой машине, без пересоздания.", p: [["status", "true — включить"]], r: "1", ex: `SetVehicleSiren(carid, true);` },
-  { n: "SetVehicleDrift", sig: "SetVehicleDrift(carid, bool:status)", d: "Дрифт-режим машины.", p: [["status", "true — включить"]], r: "1", ex: `SetVehicleDrift(carid, true);` },
+  { n: "SetVehicleDrift", sig: "SetVehicleDrift(carid, bool:status)", d: "Помечает машину для дрифта. Сам подсчёт очков включается у игрока через SetPlayerDriftMode.", p: [["status", "true — включить"]], r: "1", ex: `SetVehicleDrift(carid, true);` },
  ]},
  { id: "handling", title: "Хендлинг", lead: "Как машина едет: скорость, разгон, тормоза, сцепление, подвеска. Значения можно брать из handling.cfg, который лежит в папке scriptfiles.", fns: [
   { n: "Handling_Load", sig: "Handling_Load(const file[] = MODGEAR_HANDLING_FILE)", d: "Загружает handling.cfg из scriptfiles. По умолчанию путь берётся из инклуда — его можно поменять до #include.", p: [["file", "путь внутри scriptfiles"]], r: "число загруженных машин, -1 — файл не найден",
