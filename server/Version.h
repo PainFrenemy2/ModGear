@@ -1,0 +1,47 @@
+#pragma once
+
+// Версии ModGear. Две редакции из одного кода:
+//   ModGear     - полная (MODGEAR_FULL = 1)
+//   ModGearAlfa - только замена моделей/скинов/иконок, цвет машин, статус лаунчера (MODGEAR_FULL = 0)
+// INCLUDE_FILE_VERSION должна совпадать с ModGear_IncludeFileVersion в .inc
+
+#define MODGEAR_VERSION_MAJOR 0
+#define MODGEAR_VERSION_MINOR 7
+#define MODGEAR_VERSION_PATCH 0
+
+#define MODGEAR_ALFA_VERSION_MAJOR 0
+#define MODGEAR_ALFA_VERSION_MINOR 1
+#define MODGEAR_ALFA_VERSION_PATCH 3
+
+#define INCLUDE_FILE_VERSION      (0x06B)   // ModGear.inc
+#define ALFA_INCLUDE_FILE_VERSION (0x012)   // ModGearAlfa.inc
+
+
+#define MODGEAR_STR_(x) #x
+#define MODGEAR_STR(x) MODGEAR_STR_(x)
+
+#ifdef MODGEAR_ALPHA
+	#define MODGEAR_FULL 0
+	#define MODGEAR_NAME "ModGearAlfa"
+	#define MODGEAR_VER_MAJOR MODGEAR_ALFA_VERSION_MAJOR
+	#define MODGEAR_VER_MINOR MODGEAR_ALFA_VERSION_MINOR
+	#define MODGEAR_VER_PATCH MODGEAR_ALFA_VERSION_PATCH
+	#define MODGEAR_INCLUDE_VERSION ALFA_INCLUDE_FILE_VERSION
+	#define MODGEAR_VERSION_CHECK_NATIVE "SetPlayerLauncherStatus"
+#else
+	#define MODGEAR_FULL 1
+	#define MODGEAR_NAME "ModGear"
+	#define MODGEAR_VER_MAJOR MODGEAR_VERSION_MAJOR
+	#define MODGEAR_VER_MINOR MODGEAR_VERSION_MINOR
+	#define MODGEAR_VER_PATCH MODGEAR_VERSION_PATCH
+	#define MODGEAR_INCLUDE_VERSION INCLUDE_FILE_VERSION
+	#define MODGEAR_VERSION_CHECK_NATIVE "SetPlayerInterface"
+#endif
+
+#define MODGEAR_VERSION_STRING MODGEAR_STR(MODGEAR_VER_MAJOR) "." MODGEAR_STR(MODGEAR_VER_MINOR) "." MODGEAR_STR(MODGEAR_VER_PATCH) "v"
+
+#ifdef MODGEAR_PLATFORM_OMP
+	#define MODGEAR_PLATFORM_NAME "open.mp"
+#else
+	#define MODGEAR_PLATFORM_NAME "SA-MP"
+#endif

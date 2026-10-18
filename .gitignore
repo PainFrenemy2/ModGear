@@ -1,0 +1,28 @@
+# сборка
+build/
+out/
+dist/
+artifacts/
+
+# Visual Studio / CMake
+.vs/
+*.user
+*.sln
+*.vcxproj*
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+
+# скомпилированное
+*.amx
+*.dll
+*.so
+*.pdb
+*.obj
+*.lib
+*.exp
+*.ilk
+
+.vscode/
+.idea/
+*.log
