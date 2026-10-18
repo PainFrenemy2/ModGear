@@ -32,3 +32,7 @@ cmake_install.cmake
 testserver/gamemodes/*.amx
 testserver/server_log.txt
 testserver/scriptfiles/modgear_media/
+!testserver-omp/**
+testserver-omp/gamemodes/*.amx
+testserver-omp/server_log.txt
+testserver-omp/*.dmp

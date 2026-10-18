@@ -4,7 +4,7 @@
 #   <имя>-SAMP.zip         plugins/<имя>.dll и .so
 #   <имя>-openmp.zip       components/<имя>.dll и .so
 #   <имя>-includes.zip     include + документация
-#   <имя>-TestServer.zip   готовый тестовый сервер SA-MP с плагином
+#   <имя>-TestServer-SAMP.zip / -openmp.zip   готовые тестовые серверы с плагином и модом
 set -euo pipefail
 
 ART=$(cd "$1" && pwd)
@@ -33,6 +33,35 @@ z.close()' "$1" "$3")
 YTDLP="$WORK/yt-dlp.exe"
 curl -fsSL -o "$YTDLP" https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe || rm -f "$YTDLP"
 
+make_server() { # make_server <имя> <full|alfa> <samp|omp>
+	local name=$1 edition=$2 platform=$3 base label title srv
+	if [ "$platform" = samp ]; then base=testserver; label=SAMP; else base=testserver-omp; label=openmp; fi
+	title="$name Test Server ($label)"
+	srv="$WORK/server-$name-$label/$title"
+	mkdir -p "$srv"
+	cp -a "$ROOT/$base/." "$srv/"
+	find "$srv" -name .gitkeep -delete
+	mkdir -p "$srv/scriptfiles"
+	cp "$ROOT/testserver/scriptfiles/SAfull.hmap" "$srv/scriptfiles/"
+	if [ "$name" = ModGearAlfa ]; then rm -f "$srv/gamemodes/ModGear.pwn"; else rm -f "$srv/gamemodes/ModGearAlfa.pwn"; fi
+	if [ "$platform" = samp ]; then
+		cp "$ART/$edition-samp-windows/$name.dll" "$ART/$edition-samp-linux/$name.so" "$srv/plugins/"
+		cp "$WORK/inc-$name"/*.inc "$srv/pawno/include/"
+		sed -i -E "s/^(gamemode0[[:space:]]+).*/\1$name/; s/^(hostname[[:space:]]+).*/\1$title/; /^plugins /s/\bModGear(Alfa)?\b/$name/" "$srv/server.cfg"
+		[ "${OS:-}" = "Windows_NT" ] && (cd "$srv/gamemodes" && ../pawno/pawncc.exe "$name.pwn" -i../pawno/include -d3 "-o$name.amx")
+	else
+		cp "$ART/$edition-omp-windows/$name.dll" "$srv/components/"
+		cp "$WORK/inc-$name"/*.inc "$srv/qawno/include/"
+		python -c 'import json,sys
+p,name,title=sys.argv[1:4]; d=json.load(open(p,encoding="utf-8"))
+d["pawn"]["main_scripts"]=[name]; d["name"]=title
+json.dump(d,open(p,"w",encoding="utf-8"),ensure_ascii=False,indent=4)' "$srv/config.json" "$name" "$title"
+		[ "${OS:-}" = "Windows_NT" ] && (cd "$srv/gamemodes" && ../qawno/pawncc.exe "$name.pwn" -i../qawno/include -d3 "-o$name.amx")
+	fi
+	[ -f "$YTDLP" ] && cp "$YTDLP" "$srv/"
+	zipdir "$OUT/$name/$name-TestServer-$label.zip" "$WORK/server-$name-$label" "$title"
+}
+
 for name in ModGear ModGearAlfa; do
 	edition=full; v=$(ver MODGEAR_VERSION)
 	[ "$name" = ModGearAlfa ] && edition=alfa && v=$(ver MODGEAR_ALFA_VERSION)
@@ -59,20 +88,8 @@ for name in ModGear ModGearAlfa; do
 	cp "$ROOT/docs/index.html" "$inc/ModGear.html"
 	zipdir "$dst/$name-includes.zip" "$inc" .
 
-	title="$name Test Server"
-	srv="$WORK/server-$name/$title"
-	mkdir -p "$srv"
-	cp -a "$ROOT/testserver/." "$srv/"
-	rm -f "$srv/filterscripts/.gitkeep"
-	cp "$ART/$edition-samp-windows/$name.dll" "$ART/$edition-samp-linux/$name.so" "$srv/plugins/"
-	cp "$inc"/*.inc "$srv/pawno/include/"
-	if [ "$name" = ModGearAlfa ]; then rm -f "$srv/gamemodes/ModGear.pwn"; else rm -f "$srv/gamemodes/ModGearAlfa.pwn"; fi
-	sed -i -E "s/^(gamemode0[[:space:]]+).*/\1$name/; s/^(hostname[[:space:]]+).*/\1$title/; /^plugins /s/\bModGear(Alfa)?\b/$name/" "$srv/server.cfg"
-	if [ "${OS:-}" = "Windows_NT" ]; then
-		(cd "$srv/gamemodes" && ../pawno/pawncc.exe "$name.pwn" -i../pawno/include -d3 "-o$name.amx")
-	fi
-	[ -f "$YTDLP" ] && cp "$YTDLP" "$srv/"
-	zipdir "$dst/$name-TestServer.zip" "$WORK/server-$name" "$title"
+	make_server "$name" "$edition" samp
+	make_server "$name" "$edition" omp
 done
 
 rm -rf "$WORK"

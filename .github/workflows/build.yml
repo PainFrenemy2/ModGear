@@ -102,7 +102,8 @@ jobs:
               echo "| \`$name-SAMP.zip\` | плагин для SA-MP 0.3.7: \`plugins/$name.dll\` (Windows) и \`.so\` (Linux) |"
               echo "| \`$name-openmp.zip\` | компонент для open.mp: \`components/$name.dll\` (Windows) и \`.so\` (Linux) |"
               echo "| \`$name-includes.zip\` | include для Pawn и документация |"
-              echo "| \`$name-TestServer.zip\` | готовый тестовый сервер SA-MP с плагином и модом: распаковать и запустить \`start.bat\` |"
+              echo "| \`$name-TestServer-SAMP.zip\` | готовый тестовый сервер SA-MP с плагином и модом: распаковать и запустить \`start.bat\` |"
+              echo "| \`$name-TestServer-openmp.zip\` | готовый тестовый сервер open.mp с плагином и модом: распаковать и запустить \`start.bat\` |"
               echo
               echo "Документация: https://painfrenemy2.github.io/ModGear/"
             } > notes-$name.md

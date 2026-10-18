@@ -61,7 +61,8 @@ ModGear и ModGearAlfa выходят [отдельными релизами](ht
 | `ModGear-SAMP.zip` | плагин для **SA-MP**: `plugins/ModGear.dll` (Windows) и `.so` (Linux) |
 | `ModGear-openmp.zip` | компонент для **open.mp**: `components/ModGear.dll` (Windows) и `.so` (Linux) |
 | `ModGear-includes.zip` | include (`ModGear*.inc`) и документация |
-| `ModGear-TestServer.zip` | готовый тестовый сервер **SA-MP** с плагином и модом - распаковать и запустить `start.bat` |
+| `ModGear-TestServer-SAMP.zip` | готовый тестовый сервер **SA-MP** с плагином и модом - распаковать и запустить `start.bat` |
+| `ModGear-TestServer-openmp.zip` | готовый тестовый сервер **open.mp** с плагином и модом - распаковать и запустить `start.bat` |
 
 
 ## 🚀 Установка
@@ -240,14 +241,14 @@ git push origin main:release
 Чтобы релиз публиковался от вашего аккаунта, а не от `github-actions`, добавьте секрет `RELEASE_TOKEN`
 (личный токен с правом `Contents: write`).
 
-## 🧪 Тестовый сервер
+## 🧪 Тестовые серверы
 
-В [`testserver`](testserver) лежит тестовый сервер SA-MP с модом, где через `/menu` проверяется каждая функция плагина.
-Собранный (с плагином и скомпилированным модом) выходит в каждом релизе - `ModGear-TestServer.zip`.
-По умолчанию он слушает `127.0.0.1:7777` - чтобы заходить с других ПК, поменяйте `bind` в `server.cfg`.
+В [`testserver`](testserver) (SA-MP) и [`testserver-omp`](testserver-omp) (open.mp) - тестовые серверы с модом,
+где через `/menu` проверяется каждая функция плагина. Собранные (с плагином и скомпилированным модом) выходят
+в каждом релизе - `ModGear-TestServer-SAMP.zip` и `ModGear-TestServer-openmp.zip`.
+По умолчанию они слушают `127.0.0.1:7777` - чтобы заходить с других ПК, поменяйте `bind` в `server.cfg` / `config.json`.
 
-Мод и конфиг для open.mp - в [`examples/openmp`](examples/openmp). Для компиляции нужны include
-[Pawn.CMD](https://github.com/katursis/Pawn.CMD), [sscanf](https://github.com/Y-Less/sscanf),
+Для компиляции мода вручную нужны include [Pawn.CMD](https://github.com/katursis/Pawn.CMD), [sscanf](https://github.com/Y-Less/sscanf),
 [Streamer](https://github.com/samp-incognito/samp-streamer-plugin), [Pawn.RakNet](https://github.com/katursis/Pawn.RakNet),
 [fmt](https://github.com/IllidanS4/pawn-fmt) (SA-MP) и `ModGear*.inc` из [`include`](include).
 
@@ -267,7 +268,7 @@ include/            ModGear*.inc для Pawn
 lib/                RakNet, sampgdk, open.mp SDK (сабмодули)
 docs/               документация (GitHub Pages)
 testserver/         тестовый сервер SA-MP с модом
-examples/openmp/    мод и конфиг для open.mp
+testserver-omp/     тестовый сервер open.mp с модом
 tools/              упаковка релиза
 build.bat           сборка под Windows
 ```
