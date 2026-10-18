@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # pack_release.sh <папка с артефактами сборки> <папка для релизов>
-# Для каждой редакции (ModGear, ModGearAlfa) - своя папка <релизы>/<имя>, версия из Version.h:
-#   <имя>-<версия>-SAMP.zip         plugins/<имя>-<версия>.dll и .so
-#   <имя>-<версия>-openmp.zip       components/<имя>-<версия>.dll и .so
-#   <имя>-<версия>-includes.zip     include + документация
-#   <имя>-<версия>-TestServer.zip   готовый тестовый сервер SA-MP с плагином
+# Для каждой редакции (ModGear, ModGearAlfa) - своя папка <релизы>/<имя>:
+#   <имя>-SAMP.zip         plugins/<имя>.dll и .so
+#   <имя>-openmp.zip       components/<имя>.dll и .so
+#   <имя>-includes.zip     include + документация
+#   <имя>-TestServer.zip   готовый тестовый сервер SA-MP с плагином
 set -euo pipefail
 
 ART=$(cd "$1" && pwd)
@@ -41,15 +41,15 @@ for name in ModGear ModGearAlfa; do
 
 	pkg="$WORK/samp-$name"
 	mkdir -p "$pkg/plugins"
-	cp "$ART/$edition-samp-windows/$name.dll" "$pkg/plugins/$name-$v.dll"
-	cp "$ART/$edition-samp-linux/$name.so"    "$pkg/plugins/$name-$v.so"
-	zipdir "$dst/$name-$v-SAMP.zip" "$pkg" plugins
+	cp "$ART/$edition-samp-windows/$name.dll" "$pkg/plugins/$name.dll"
+	cp "$ART/$edition-samp-linux/$name.so"    "$pkg/plugins/$name.so"
+	zipdir "$dst/$name-SAMP.zip" "$pkg" plugins
 
 	pkg="$WORK/omp-$name"
 	mkdir -p "$pkg/components"
-	cp "$ART/$edition-omp-windows/$name.dll"  "$pkg/components/$name-$v.dll"
-	cp "$ART/$edition-omp-linux/$name.so"     "$pkg/components/$name-$v.so"
-	zipdir "$dst/$name-$v-openmp.zip" "$pkg" components
+	cp "$ART/$edition-omp-windows/$name.dll"  "$pkg/components/$name.dll"
+	cp "$ART/$edition-omp-linux/$name.so"     "$pkg/components/$name.so"
+	zipdir "$dst/$name-openmp.zip" "$pkg" components
 
 	inc="$WORK/inc-$name"
 	mkdir -p "$inc"
@@ -57,7 +57,7 @@ for name in ModGear ModGearAlfa; do
 	else cp "$ROOT/include/ModGearAlfa.inc" "$inc/"
 	fi
 	cp "$ROOT/docs/index.html" "$inc/ModGear.html"
-	zipdir "$dst/$name-$v-includes.zip" "$inc" .
+	zipdir "$dst/$name-includes.zip" "$inc" .
 
 	title="$name Test Server"
 	srv="$WORK/server-$name/$title"
@@ -72,7 +72,7 @@ for name in ModGear ModGearAlfa; do
 		(cd "$srv/gamemodes" && ../pawno/pawncc.exe "$name.pwn" -i../pawno/include -d3 "-o$name.amx")
 	fi
 	[ -f "$YTDLP" ] && cp "$YTDLP" "$srv/"
-	zipdir "$dst/$name-$v-TestServer.zip" "$WORK/server-$name" "$title"
+	zipdir "$dst/$name-TestServer.zip" "$WORK/server-$name" "$title"
 done
 
 rm -rf "$WORK"

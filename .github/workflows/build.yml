@@ -99,10 +99,10 @@ jobs:
               echo
               echo "| Файл | Что это |"
               echo "|---|---|"
-              echo "| \`$name-$version-SAMP.zip\` | плагин для SA-MP 0.3.7: \`plugins/$name-$version.dll\` (Windows) и \`.so\` (Linux) |"
-              echo "| \`$name-$version-openmp.zip\` | компонент для open.mp: \`components/$name-$version.dll\` (Windows) и \`.so\` (Linux) |"
-              echo "| \`$name-$version-includes.zip\` | include для Pawn и документация |"
-              echo "| \`$name-$version-TestServer.zip\` | готовый тестовый сервер SA-MP с плагином и модом: распаковать и запустить \`start.bat\` |"
+              echo "| \`$name-SAMP.zip\` | плагин для SA-MP 0.3.7: \`plugins/$name.dll\` (Windows) и \`.so\` (Linux) |"
+              echo "| \`$name-openmp.zip\` | компонент для open.mp: \`components/$name.dll\` (Windows) и \`.so\` (Linux) |"
+              echo "| \`$name-includes.zip\` | include для Pawn и документация |"
+              echo "| \`$name-TestServer.zip\` | готовый тестовый сервер SA-MP с плагином и модом: распаковать и запустить \`start.bat\` |"
               echo
               echo "Документация: https://painfrenemy2.github.io/ModGear/"
             } > notes-$name.md

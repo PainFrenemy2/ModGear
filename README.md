@@ -58,23 +58,22 @@ ModGear и ModGearAlfa выходят [отдельными релизами](ht
 
 | Файл | Для чего |
 |---|---|
-| `ModGear-<версия>-SAMP.zip` | плагин для **SA-MP**: `plugins/ModGear-<версия>.dll` (Windows) и `.so` (Linux) |
-| `ModGear-<версия>-openmp.zip` | компонент для **open.mp**: `components/ModGear-<версия>.dll` (Windows) и `.so` (Linux) |
-| `ModGear-<версия>-includes.zip` | include (`ModGear*.inc`) и документация |
-| `ModGear-<версия>-TestServer.zip` | готовый тестовый сервер **SA-MP** с плагином и модом - распаковать и запустить `start.bat` |
+| `ModGear-SAMP.zip` | плагин для **SA-MP**: `plugins/ModGear.dll` (Windows) и `.so` (Linux) |
+| `ModGear-openmp.zip` | компонент для **open.mp**: `components/ModGear.dll` (Windows) и `.so` (Linux) |
+| `ModGear-includes.zip` | include (`ModGear*.inc`) и документация |
+| `ModGear-TestServer.zip` | готовый тестовый сервер **SA-MP** с плагином и модом - распаковать и запустить `start.bat` |
 
-Плагин можно переименовать в `ModGear.dll` / `ModGear.so` - SA-MP и open.mp грузят его под любым именем.
 
 ## 🚀 Установка
 
 **SA-MP**
-1. Распакуйте `ModGear-<версия>-SAMP.zip` в папку сервера (`plugins/`).
-2. В `server.cfg` допишите имя файла: `plugins ... ModGear-<версия>` (Linux: `ModGear-<версия>.so`).
-3. Include из `ModGear-<версия>-includes.zip` - в `pawno/include`.
+1. Распакуйте `ModGear-SAMP.zip` в папку сервера (`plugins/`).
+2. В `server.cfg` допишите плагин: `plugins ... ModGear` (Linux: `ModGear.so`).
+3. Include из `ModGear-includes.zip` - в `pawno/include`.
 
 **open.mp**
-1. Распакуйте `ModGear-<версия>-openmp.zip` в папку сервера (`components/`). В `config.json` ничего дописывать не нужно.
-2. Include из `ModGear-<версия>-includes.zip` - в `qawno/include`.
+1. Распакуйте `ModGear-openmp.zip` в папку сервера (`components/`). В `config.json` ничего дописывать не нужно.
+2. Include из `ModGear-includes.zip` - в `qawno/include`.
 
 **В моде**
 
@@ -244,7 +243,7 @@ git push origin main:release
 ## 🧪 Тестовый сервер
 
 В [`testserver`](testserver) лежит тестовый сервер SA-MP с модом, где через `/menu` проверяется каждая функция плагина.
-Собранный (с плагином и скомпилированным модом) выходит в каждом релизе - `ModGear-<версия>-TestServer.zip`.
+Собранный (с плагином и скомпилированным модом) выходит в каждом релизе - `ModGear-TestServer.zip`.
 По умолчанию он слушает `127.0.0.1:7777` - чтобы заходить с других ПК, поменяйте `bind` в `server.cfg`.
 
 Мод и конфиг для open.mp - в [`examples/openmp`](examples/openmp). Для компиляции нужны include
