@@ -600,8 +600,8 @@ static cell AMX_NATIVE_CALL n_InstallNumberVehicle(AMX* amx, cell* params)
 	amx_GetString(number, number_ptr, 0, sizeof(number));
 	amx_GetAddr(amx, params[arg_region], &number_ptr);
 	amx_GetString(region, number_ptr, 0, sizeof(region));
-	snprintf(vTemp[params[arg_carid]].vNumber, sizeof(vTemp[params[arg_carid]].vNumber), "%s", number);
-	snprintf(vTemp[params[arg_carid]].vRegion, sizeof(vTemp[params[arg_carid]].vRegion), "%s", region);
+	snprintf(vTemp[params[arg_carid]].vNumber, sizeof(vTemp[params[arg_carid]].vNumber), "%.*s", (int)sizeof(vTemp[params[arg_carid]].vNumber) - 1, number);
+	snprintf(vTemp[params[arg_carid]].vRegion, sizeof(vTemp[params[arg_carid]].vRegion), "%.*s", (int)sizeof(vTemp[params[arg_carid]].vRegion) - 1, region);
 	vTemp[params[arg_carid]].vNumberType = params[arg_type];
 	Native::b_InstallNumberVehicle(params[arg_carid], params[arg_type], number, region);
 	return 1;
