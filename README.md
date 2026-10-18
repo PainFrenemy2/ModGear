@@ -225,12 +225,15 @@ cmake --build build --parallel
 GitHub Actions собирает все 8 вариантов (2 редакции × SA-MP/open.mp × Windows/Linux) на каждый push и pull request.
 Готовые файлы - во вкладке **Actions → запуск → Artifacts**.
 
-Релиз выходит по тегу:
+Релиз выходит сам, когда вы пушите в ветку **`release`**: версия берётся из `server/Version.h`,
+создаётся релиз `ModGear-vX.Y.Z` с архивами (если такая версия уже есть - архивы в нём обновляются).
 
 ```bash
-git tag ModGear-v0.7.1
-git push origin ModGear-v0.7.1
+# поднять версию в server/Version.h, закоммитить в main, затем:
+git push origin main:release
 ```
+
+Можно и тегом: `git tag ModGear-v0.7.1 && git push origin ModGear-v0.7.1`.
 
 Чтобы релиз публиковался от вашего аккаунта, а не от `github-actions`, добавьте секрет `RELEASE_TOKEN`
 (личный токен с правом `Contents: write`).

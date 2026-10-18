@@ -154,7 +154,6 @@ footer { color: var(--muted); font-size: 13px; border-top: 1px solid var(--line)
 // ---------- данные ----------
 const SECTIONS = [
  { id: "launcher", title: "Лаунчер и сервер", lead: "Файл: #include <ModGear>. Статус лаунчера — вызывайте первым — и данные сервера на худе.", fns: [
-#include <ModGear>` },
   { n: "SetPlayerLauncherStatus", alfa: 1, sig: "SetPlayerLauncherStatus(playerid, bool:status)",
     d: "Отмечает, что игрок зашёл с лаунчера. Вызывайте первой — без неё плагин не отправляет игроку ни интерфейс, ни тюнинг, ни звук. При включении игрок сразу получает колонки, которые уже стоят на карте.",
     p: [["playerid", "ид игрока"], ["status", "true — с лаунчером, false — без"]], r: "1, или 0 если status не 0/1",

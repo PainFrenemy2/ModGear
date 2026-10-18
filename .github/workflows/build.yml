@@ -1,8 +1,10 @@
 name: Build
 
 # Сборка на каждый push и pull request: готовые файлы - во вкладке Actions -> нужный запуск -> Artifacts.
-# Релиз: запушить тег вида ModGear-v0.7.0 (git tag ModGear-v0.7.0 && git push origin ModGear-v0.7.0) -
-# соберутся все версии и выйдет релиз с архивами.
+# Релиз выходит сам:
+#   - push в ветку release - версия берётся из server/Version.h (тег ModGear-vX.Y.Z);
+#   - или push тега ModGear-vX.Y.Z.
+# Если релиз с этой версией уже есть - в нём обновляются архивы.
 
 on:
   push:
@@ -78,13 +80,17 @@ jobs:
           path: dist/*.zip
 
       - name: Release
-        if: startsWith(github.ref, 'refs/tags/ModGear-v')
+        if: startsWith(github.ref, 'refs/tags/ModGear-v') || github.ref == 'refs/heads/release'
         env:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          tag="${GITHUB_REF_NAME}"
           get() { sed -nE "s/^#define $1 ([0-9]+).*/\1/p" server/Version.h; }
+          if [ "$GITHUB_REF_TYPE" = tag ]; then
+            tag="$GITHUB_REF_NAME"
+          else
+            tag="ModGear-v$(get MODGEAR_VERSION_MAJOR).$(get MODGEAR_VERSION_MINOR).$(get MODGEAR_VERSION_PATCH)"
+          fi
           alfa="$(get MODGEAR_ALFA_VERSION_MAJOR).$(get MODGEAR_ALFA_VERSION_MINOR).$(get MODGEAR_ALFA_VERSION_PATCH)"
           {
             echo "ModGear ${tag#ModGear-v} (ModGearAlfa $alfa)"
@@ -97,6 +103,7 @@ jobs:
           } > notes.md
           if gh release view "$tag" >/dev/null 2>&1; then
             gh release upload "$tag" dist/*.zip --clobber
+            gh release edit "$tag" --notes-file notes.md
           else
-            gh release create "$tag" --title "ModGear ${tag#ModGear-v}" --notes-file notes.md dist/*.zip
+            gh release create "$tag" --target "$GITHUB_SHA" --latest --title "ModGear ${tag#ModGear-v}" --notes-file notes.md dist/*.zip
           fi
