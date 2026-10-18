@@ -58,18 +58,24 @@ ModGearAlfa подключается **вместо** ModGear (`#include <ModGea
 
 | Файл | Для чего |
 |---|---|
-| `ModGear-SAMP.zip` | сервер **SA-MP**: `plugins/ModGear.dll` / `.so` + `pawno/include/*.inc` |
-| `ModGear-openmp.zip` | сервер **open.mp**: `components/ModGear.dll` / `.so` + `qawno/include/*.inc` |
-| `ModGearAlfa-*.zip` | то же для облегчённой редакции |
+| `ModGear-TestServer.zip` | готовый тестовый сервер **SA-MP** с плагином и модом - распаковать и запустить `start.bat` |
+| `ModGear-includes.zip` | все include для Pawn (`ModGear*.inc`) и документация |
+| `ModGear-SAMP.dll` / `ModGear-SAMP.so` | плагин для **SA-MP** (Windows / Linux) |
+| `ModGear-openmp.dll` / `ModGear-openmp.so` | компонент для **open.mp** (Windows / Linux) |
+| `ModGearAlfa-*` | то же для облегчённой редакции |
+
+Имя файла плагина можно не менять: SA-MP и open.mp грузят его под любым именем.
 
 ## 🚀 Установка
 
 **SA-MP**
-1. Распакуйте `ModGear-SAMP.zip` в папку сервера.
-2. В `server.cfg` допишите плагин: `plugins ... ModGear` (Linux: `ModGear.so`).
+1. `ModGear-SAMP.dll` (Windows) или `ModGear-SAMP.so` (Linux) - в папку `plugins` сервера.
+2. В `server.cfg` допишите: `plugins ... ModGear-SAMP` (Linux: `ModGear-SAMP.so`).
+3. Include из `ModGear-includes.zip` - в `pawno/include`.
 
 **open.mp**
-1. Распакуйте `ModGear-openmp.zip` в папку сервера (`components/`). В `config.json` ничего дописывать не нужно.
+1. `ModGear-openmp.dll` или `ModGear-openmp.so` - в папку `components` сервера. В `config.json` ничего дописывать не нужно.
+2. Include из `ModGear-includes.zip` - в `qawno/include`.
 
 **В моде**
 
@@ -238,10 +244,13 @@ git push origin main:release
 Чтобы релиз публиковался от вашего аккаунта, а не от `github-actions`, добавьте секрет `RELEASE_TOKEN`
 (личный токен с правом `Contents: write`).
 
-## 🧪 Тестовый мод
+## 🧪 Тестовый сервер
 
-В [`examples`](examples) - тестовые моды с меню на все функции плагина (`/menu`) и примеры конфигов
-для SA-MP и open.mp. Для компиляции нужны include
+В [`testserver`](testserver) лежит тестовый сервер SA-MP с модом, где через `/menu` проверяется каждая функция плагина.
+Собранный (с плагином и скомпилированным модом) выходит в каждом релизе - `ModGear-TestServer.zip`.
+По умолчанию он слушает `127.0.0.1:7777` - чтобы заходить с других ПК, поменяйте `bind` в `server.cfg`.
+
+Мод и конфиг для open.mp - в [`examples/openmp`](examples/openmp). Для компиляции нужны include
 [Pawn.CMD](https://github.com/katursis/Pawn.CMD), [sscanf](https://github.com/Y-Less/sscanf),
 [Streamer](https://github.com/samp-incognito/samp-streamer-plugin), [Pawn.RakNet](https://github.com/katursis/Pawn.RakNet),
 [fmt](https://github.com/IllidanS4/pawn-fmt) (SA-MP) и `ModGear*.inc` из [`include`](include).
@@ -261,7 +270,8 @@ server/             исходники плагина
 include/            ModGear*.inc для Pawn
 lib/                RakNet, sampgdk, open.mp SDK (сабмодули)
 docs/               документация (GitHub Pages)
-examples/           тестовые моды и конфиги
+testserver/         тестовый сервер SA-MP с модом
+examples/openmp/    мод и конфиг для open.mp
 tools/              упаковка релиза
 build.bat           сборка под Windows
 ```

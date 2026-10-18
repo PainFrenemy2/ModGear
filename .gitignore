@@ -26,3 +26,9 @@ cmake_install.cmake
 .vscode/
 .idea/
 *.log
+
+# тестовый сервер хранится целиком (кроме скомпилированного мода и логов)
+!testserver/**
+testserver/gamemodes/*.amx
+testserver/server_log.txt
+testserver/scriptfiles/modgear_media/

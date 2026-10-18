@@ -63,7 +63,10 @@ jobs:
   package:
     name: Package
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
 
@@ -77,7 +80,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: ModGear-release
-          path: dist/*.zip
+          path: dist/*
 
       - name: Release
         if: startsWith(github.ref, 'refs/tags/ModGear-v') || github.ref == 'refs/heads/release'
@@ -95,14 +98,16 @@ jobs:
           {
             echo "ModGear ${tag#ModGear-v} (ModGearAlfa $alfa)"
             echo
-            echo "| Файл | Что внутри |"
+            echo "| Файл | Что это |"
             echo "|---|---|"
-            echo "| \`ModGear-SAMP.zip\` | плагин для SA-MP 0.3.7 (Windows + Linux) и include |"
-            echo "| \`ModGear-openmp.zip\` | компонент для open.mp (Windows + Linux) и include |"
-            echo "| \`ModGearAlfa-*.zip\` | облегчённая редакция |"
+            echo "| \`ModGear-TestServer.zip\` | готовый тестовый сервер SA-MP с плагином и модом: распаковать и запустить \`start.bat\` |"
+            echo "| \`ModGear-includes.zip\` | все include для Pawn и документация |"
+            echo "| \`ModGear-SAMP.dll\` / \`.so\` | плагин для SA-MP 0.3.7 (Windows / Linux) - в папку \`plugins\` |"
+            echo "| \`ModGear-openmp.dll\` / \`.so\` | компонент для open.mp (Windows / Linux) - в папку \`components\` |"
+            echo "| \`ModGearAlfa-*\` | облегчённая редакция |"
           } > notes.md
           if gh release view "$tag" >/dev/null 2>&1; then
-            gh release upload "$tag" dist/*.zip --clobber
+            gh release upload "$tag" dist/* --clobber
           else
-            gh release create "$tag" --target "$GITHUB_SHA" --latest --title "ModGear ${tag#ModGear-v}" --notes-file notes.md dist/*.zip
+            gh release create "$tag" --target "$GITHUB_SHA" --latest --title "ModGear ${tag#ModGear-v}" --notes-file notes.md dist/*
           fi
