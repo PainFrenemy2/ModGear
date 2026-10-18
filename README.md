@@ -18,7 +18,7 @@
 [**📥 Скачать**](https://github.com/PainFrenemy2/ModGear/releases/latest) •
 [**📖 Документация**](https://painfrenemy2.github.io/ModGear/) •
 [**🛠 Сборка**](#-сборка-из-исходников) •
-[**🌐 Порты**](#-порты)
+[**🌐 Порты**](docs/ports.md)
 
 </div>
 
@@ -111,6 +111,8 @@ public OnPlayerConnect(playerid)
 | **7777** | UDP | игровой сервер | всегда |
 | **7780** | TCP | медиасервер: музыка с YouTube, видео, Twitch | если в моде есть `Media_Init()` |
 | **7781** | UDP | вебкамера (AZRTC) | если в моде есть `Webcam_Init()` |
+
+> 📘 **Подробная инструкция: [как открыть порты на Windows, Linux, хостинге и роутере](docs/ports.md)** - с проверкой и частыми проблемами.
 
 Порты можно поменять: `Media_Init(port)`, `Webcam_Init(port)` или `#define MODGEAR_MEDIA_PORT` / `MODGEAR_WEBCAM_PORT` перед `#include`.
 
@@ -266,7 +268,7 @@ server/             исходники плагина
   platform/omp/     вход для open.mp
 include/            ModGear*.inc для Pawn
 lib/                RakNet, sampgdk, open.mp SDK (сабмодули)
-docs/               документация (GitHub Pages)
+docs/               документация (GitHub Pages), инструкция по портам
 testserver/         тестовый сервер SA-MP с модом
 testserver-omp/     тестовый сервер open.mp с модом
 tools/              упаковка релиза
