@@ -4,7 +4,7 @@ name: Build
 # Релиз выходит сам:
 #   - push в ветку release - версия берётся из server/Version.h (тег ModGear-vX.Y.Z);
 #   - или push тега ModGear-vX.Y.Z.
-# Если релиз с этой версией уже есть - в нём обновляются архивы.
+# Если релиз с этой версией уже есть - в нём обновляются только архивы (описание не трогается).
 
 on:
   push:
@@ -103,7 +103,6 @@ jobs:
           } > notes.md
           if gh release view "$tag" >/dev/null 2>&1; then
             gh release upload "$tag" dist/*.zip --clobber
-            gh release edit "$tag" --notes-file notes.md
           else
             gh release create "$tag" --target "$GITHUB_SHA" --latest --title "ModGear ${tag#ModGear-v}" --notes-file notes.md dist/*.zip
           fi
