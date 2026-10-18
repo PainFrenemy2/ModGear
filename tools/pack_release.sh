@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # pack_release.sh <папка с артефактами сборки> <папка для релизов>
-# Для каждой редакции (ModGear, ModGearAlfa) - своя папка <релизы>/<имя>, в именах версия из Version.h:
-#   <имя>-<версия>-SAMP.dll / .so          плагин SA-MP
-#   <имя>-<версия>-openmp.dll / .so        компонент open.mp
-#   <имя>-<версия>-includes.zip            include + документация
-#   <имя>-<версия>-TestServer-SAMP.zip     готовый тестовый сервер SA-MP с плагином
+# Для каждой редакции (ModGear, ModGearAlfa) - своя папка <релизы>/<имя>, версия из Version.h:
+#   <имя>-<версия>-SAMP.zip         plugins/<имя>-<версия>.dll и .so
+#   <имя>-<версия>-openmp.zip       components/<имя>-<версия>.dll и .so
+#   <имя>-<версия>-includes.zip     include + документация
+#   <имя>-<версия>-TestServer.zip   готовый тестовый сервер SA-MP с плагином
 set -euo pipefail
 
 ART=$(cd "$1" && pwd)
@@ -39,10 +39,17 @@ for name in ModGear ModGearAlfa; do
 	dst="$OUT/$name"
 	mkdir -p "$dst"
 
-	cp "$ART/$edition-samp-windows/$name.dll" "$dst/$name-$v-SAMP.dll"
-	cp "$ART/$edition-samp-linux/$name.so"    "$dst/$name-$v-SAMP.so"
-	cp "$ART/$edition-omp-windows/$name.dll"  "$dst/$name-$v-openmp.dll"
-	cp "$ART/$edition-omp-linux/$name.so"     "$dst/$name-$v-openmp.so"
+	pkg="$WORK/samp-$name"
+	mkdir -p "$pkg/plugins"
+	cp "$ART/$edition-samp-windows/$name.dll" "$pkg/plugins/$name-$v.dll"
+	cp "$ART/$edition-samp-linux/$name.so"    "$pkg/plugins/$name-$v.so"
+	zipdir "$dst/$name-$v-SAMP.zip" "$pkg" plugins
+
+	pkg="$WORK/omp-$name"
+	mkdir -p "$pkg/components"
+	cp "$ART/$edition-omp-windows/$name.dll"  "$pkg/components/$name-$v.dll"
+	cp "$ART/$edition-omp-linux/$name.so"     "$pkg/components/$name-$v.so"
+	zipdir "$dst/$name-$v-openmp.zip" "$pkg" components
 
 	inc="$WORK/inc-$name"
 	mkdir -p "$inc"
@@ -65,7 +72,7 @@ for name in ModGear ModGearAlfa; do
 		(cd "$srv/gamemodes" && ../pawno/pawncc.exe "$name.pwn" -i../pawno/include -d3 "-o$name.amx")
 	fi
 	[ -f "$YTDLP" ] && cp "$YTDLP" "$srv/"
-	zipdir "$dst/$name-$v-TestServer-SAMP.zip" "$WORK/server-$name" "$title"
+	zipdir "$dst/$name-$v-TestServer.zip" "$WORK/server-$name" "$title"
 done
 
 rm -rf "$WORK"

@@ -99,15 +99,10 @@ jobs:
               echo
               echo "| Файл | Что это |"
               echo "|---|---|"
-              echo "| **SA-MP 0.3.7** | |"
-              echo "| \`$name-$version-SAMP.dll\` | плагин для Windows - в папку \`plugins\` |"
-              echo "| \`$name-$version-SAMP.so\` | плагин для Linux - в папку \`plugins\` |"
-              echo "| \`$name-$version-TestServer-SAMP.zip\` | готовый тестовый сервер с плагином и модом: распаковать и запустить \`start.bat\` |"
-              echo "| **open.mp** | |"
-              echo "| \`$name-$version-openmp.dll\` | компонент для Windows - в папку \`components\` |"
-              echo "| \`$name-$version-openmp.so\` | компонент для Linux - в папку \`components\` |"
-              echo "| **Pawn** | |"
-              echo "| \`$name-$version-includes.zip\` | include и документация (для SA-MP и open.mp) |"
+              echo "| \`$name-$version-SAMP.zip\` | плагин для SA-MP 0.3.7: \`plugins/$name-$version.dll\` (Windows) и \`.so\` (Linux) |"
+              echo "| \`$name-$version-openmp.zip\` | компонент для open.mp: \`components/$name-$version.dll\` (Windows) и \`.so\` (Linux) |"
+              echo "| \`$name-$version-includes.zip\` | include для Pawn и документация |"
+              echo "| \`$name-$version-TestServer.zip\` | готовый тестовый сервер SA-MP с плагином и модом: распаковать и запустить \`start.bat\` |"
               echo
               echo "Документация: https://painfrenemy2.github.io/ModGear/"
             } > notes-$name.md
