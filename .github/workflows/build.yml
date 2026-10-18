@@ -1,15 +1,13 @@
 name: Build
 
 # Сборка на каждый push и pull request: готовые файлы - во вкладке Actions -> нужный запуск -> Artifacts.
-# Релиз выходит сам:
-#   - push в ветку release - версия берётся из server/Version.h (тег ModGear-vX.Y.Z);
-#   - или push тега ModGear-vX.Y.Z.
-# Если релиз с этой версией уже есть - в нём обновляются только архивы (описание не трогается).
+# Релизы выходят сами при push в ветку release - отдельно ModGear и ModGearAlfa,
+# версии берутся из server/Version.h (теги ModGear-vX.Y.Z и ModGearAlfa-vX.Y.Z).
+# Если релиз с этой версией уже есть - в нём обновляются только файлы (описание не трогается).
 
 on:
   push:
     branches: ['**']
-    tags: ['ModGear-v*']
   pull_request:
   workflow_dispatch:
 
@@ -80,34 +78,50 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: ModGear-release
-          path: dist/*
+          path: dist/ModGear/*
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ModGearAlfa-release
+          path: dist/ModGearAlfa/*
 
       - name: Release
-        if: startsWith(github.ref, 'refs/tags/ModGear-v') || github.ref == 'refs/heads/release'
+        if: github.ref == 'refs/heads/release'
         env:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           get() { sed -nE "s/^#define $1 ([0-9]+).*/\1/p" server/Version.h; }
-          if [ "$GITHUB_REF_TYPE" = tag ]; then
-            tag="$GITHUB_REF_NAME"
-          else
-            tag="ModGear-v$(get MODGEAR_VERSION_MAJOR).$(get MODGEAR_VERSION_MINOR).$(get MODGEAR_VERSION_PATCH)"
-          fi
+          release() { # release <имя> <версия> <описание редакции>
+            local name=$1 version=$2 about=$3 tag="$1-v$2"
+            {
+              echo "$name $version - $about"
+              echo
+              echo "| Файл | Что это |"
+              echo "|---|---|"
+              echo "| **SA-MP 0.3.7** | |"
+              echo "| \`$name-$version-SAMP.dll\` | плагин для Windows - в папку \`plugins\` |"
+              echo "| \`$name-$version-SAMP.so\` | плагин для Linux - в папку \`plugins\` |"
+              echo "| \`$name-$version-TestServer-SAMP.zip\` | готовый тестовый сервер с плагином и модом: распаковать и запустить \`start.bat\` |"
+              echo "| **open.mp** | |"
+              echo "| \`$name-$version-openmp.dll\` | компонент для Windows - в папку \`components\` |"
+              echo "| \`$name-$version-openmp.so\` | компонент для Linux - в папку \`components\` |"
+              echo "| **Pawn** | |"
+              echo "| \`$name-$version-includes.zip\` | include и документация (для SA-MP и open.mp) |"
+              echo
+              echo "Документация: https://painfrenemy2.github.io/ModGear/"
+            } > notes-$name.md
+            if gh release view "$tag" >/dev/null 2>&1; then
+              for old in $(gh release view "$tag" --json assets -q '.assets[].name'); do
+                [ -f "dist/$name/$old" ] || gh release delete-asset "$tag" "$old" -y
+              done
+              gh release upload "$tag" dist/$name/* --clobber
+            else
+              gh release create "$tag" --target "$GITHUB_SHA" --title "$name $version" --notes-file notes-$name.md dist/$name/*
+            fi
+          }
+          full="$(get MODGEAR_VERSION_MAJOR).$(get MODGEAR_VERSION_MINOR).$(get MODGEAR_VERSION_PATCH)"
           alfa="$(get MODGEAR_ALFA_VERSION_MAJOR).$(get MODGEAR_ALFA_VERSION_MINOR).$(get MODGEAR_ALFA_VERSION_PATCH)"
-          {
-            echo "ModGear ${tag#ModGear-v} (ModGearAlfa $alfa)"
-            echo
-            echo "| Файл | Что это |"
-            echo "|---|---|"
-            echo "| \`ModGear-TestServer.zip\` | готовый тестовый сервер SA-MP с плагином и модом: распаковать и запустить \`start.bat\` |"
-            echo "| \`ModGear-includes.zip\` | все include для Pawn и документация |"
-            echo "| \`ModGear-SAMP.dll\` / \`.so\` | плагин для SA-MP 0.3.7 (Windows / Linux) - в папку \`plugins\` |"
-            echo "| \`ModGear-openmp.dll\` / \`.so\` | компонент для open.mp (Windows / Linux) - в папку \`components\` |"
-            echo "| \`ModGearAlfa-*\` | облегчённая редакция |"
-          } > notes.md
-          if gh release view "$tag" >/dev/null 2>&1; then
-            gh release upload "$tag" dist/* --clobber
-          else
-            gh release create "$tag" --target "$GITHUB_SHA" --latest --title "ModGear ${tag#ModGear-v}" --notes-file notes.md dist/*
-          fi
+          release ModGearAlfa "$alfa" "облегчённая редакция: замена моделей, скинов и иконок, цвет машин, статус лаунчера"
+          release ModGear "$full" "полная версия"
+          gh release edit "ModGear-v$full" --latest

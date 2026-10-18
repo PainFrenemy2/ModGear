@@ -54,28 +54,32 @@ ModGearAlfa подключается **вместо** ModGear (`#include <ModGea
 
 ## 📥 Что скачивать
 
-В каждом [релизе](https://github.com/PainFrenemy2/ModGear/releases):
+ModGear и ModGearAlfa выходят [отдельными релизами](https://github.com/PainFrenemy2/ModGear/releases) с одинаковым набором файлов:
 
 | Файл | Для чего |
 |---|---|
-| `ModGear-TestServer.zip` | готовый тестовый сервер **SA-MP** с плагином и модом - распаковать и запустить `start.bat` |
-| `ModGear-includes.zip` | все include для Pawn (`ModGear*.inc`) и документация |
-| `ModGear-SAMP.dll` / `ModGear-SAMP.so` | плагин для **SA-MP** (Windows / Linux) |
-| `ModGear-openmp.dll` / `ModGear-openmp.so` | компонент для **open.mp** (Windows / Linux) |
-| `ModGearAlfa-*` | то же для облегчённой редакции |
+| **SA-MP 0.3.7** | |
+| `ModGear-<версия>-SAMP.dll` | плагин для Windows |
+| `ModGear-<версия>-SAMP.so` | плагин для Linux |
+| `ModGear-<версия>-TestServer-SAMP.zip` | готовый тестовый сервер с плагином и модом - распаковать и запустить `start.bat` |
+| **open.mp** | |
+| `ModGear-<версия>-openmp.dll` | компонент для Windows |
+| `ModGear-<версия>-openmp.so` | компонент для Linux |
+| **Pawn** | |
+| `ModGear-<версия>-includes.zip` | include (`ModGear*.inc`) и документация - одни и те же для SA-MP и open.mp |
 
 Имя файла плагина можно не менять: SA-MP и open.mp грузят его под любым именем.
 
 ## 🚀 Установка
 
 **SA-MP**
-1. `ModGear-SAMP.dll` (Windows) или `ModGear-SAMP.so` (Linux) - в папку `plugins` сервера.
-2. В `server.cfg` допишите: `plugins ... ModGear-SAMP` (Linux: `ModGear-SAMP.so`).
-3. Include из `ModGear-includes.zip` - в `pawno/include`.
+1. `ModGear-<версия>-SAMP.dll` (Windows) или `.so` (Linux) - в папку `plugins` сервера. Удобно переименовать в `ModGear.dll` / `ModGear.so`.
+2. В `server.cfg` допишите: `plugins ... ModGear` (Linux: `ModGear.so`).
+3. Include из `ModGear-<версия>-includes.zip` - в `pawno/include`.
 
 **open.mp**
-1. `ModGear-openmp.dll` или `ModGear-openmp.so` - в папку `components` сервера. В `config.json` ничего дописывать не нужно.
-2. Include из `ModGear-includes.zip` - в `qawno/include`.
+1. `ModGear-<версия>-openmp.dll` или `.so` - в папку `components` сервера. В `config.json` ничего дописывать не нужно.
+2. Include из `ModGear-<версия>-includes.zip` - в `qawno/include`.
 
 **В моде**
 
@@ -231,15 +235,13 @@ cmake --build build --parallel
 GitHub Actions собирает все 8 вариантов (2 редакции × SA-MP/open.mp × Windows/Linux) на каждый push и pull request.
 Готовые файлы - во вкладке **Actions → запуск → Artifacts**.
 
-Релиз выходит сам, когда вы пушите в ветку **`release`**: версия берётся из `server/Version.h`,
-создаётся релиз `ModGear-vX.Y.Z` с архивами (если такая версия уже есть - архивы в нём обновляются).
+Релизы выходят сами, когда вы пушите в ветку **`release`**: версии берутся из `server/Version.h`,
+создаются два отдельных релиза - `ModGear-vX.Y.Z` и `ModGearAlfa-vX.Y.Z` (если такая версия уже есть - файлы в нём обновляются).
 
 ```bash
 # поднять версию в server/Version.h, закоммитить в main, затем:
 git push origin main:release
 ```
-
-Можно и тегом: `git tag ModGear-v0.7.1 && git push origin ModGear-v0.7.1`.
 
 Чтобы релиз публиковался от вашего аккаунта, а не от `github-actions`, добавьте секрет `RELEASE_TOKEN`
 (личный токен с правом `Contents: write`).
@@ -247,7 +249,7 @@ git push origin main:release
 ## 🧪 Тестовый сервер
 
 В [`testserver`](testserver) лежит тестовый сервер SA-MP с модом, где через `/menu` проверяется каждая функция плагина.
-Собранный (с плагином и скомпилированным модом) выходит в каждом релизе - `ModGear-TestServer.zip`.
+Собранный (с плагином и скомпилированным модом) выходит в каждом релизе - `ModGear-<версия>-TestServer-SAMP.zip`.
 По умолчанию он слушает `127.0.0.1:7777` - чтобы заходить с других ПК, поменяйте `bind` в `server.cfg`.
 
 Мод и конфиг для open.mp - в [`examples/openmp`](examples/openmp). Для компиляции нужны include
