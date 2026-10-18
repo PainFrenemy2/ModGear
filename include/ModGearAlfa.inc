@@ -6,7 +6,7 @@
  *  Подключай вместо <ModGear>, а не вместе с ним.
  *
  *  Подключение:   #include <ModGearAlfa>
- *  Документация:  https://htmlpreview.github.io/?https://raw.githubusercontent.com/PainFrenemy2/ModGear/HEAD/docs/index.html
+ *  Документация:  https://painfrenemy2.github.io/ModGear/
  * ============================================================================
  */
 

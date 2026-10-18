@@ -7,7 +7,7 @@
  *  у которых она появляется в зоне стрима.
  *
  *  Подключение:   #include <ModGear_Vehicle>      (сам подключает <ModGear>)
- *  Документация:  https://htmlpreview.github.io/?https://raw.githubusercontent.com/PainFrenemy2/ModGear/HEAD/docs/index.html
+ *  Документация:  https://painfrenemy2.github.io/ModGear/
  * ============================================================================
  */
 #if defined _ModGear_Vehicle_included

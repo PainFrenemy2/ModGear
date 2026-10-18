@@ -6,7 +6,7 @@
  *  навигатор, курсор мыши.
  *
  *  Подключение:   #include <ModGear_Interface>      (сам подключает <ModGear>)
- *  Документация:  https://htmlpreview.github.io/?https://raw.githubusercontent.com/PainFrenemy2/ModGear/HEAD/docs/index.html
+ *  Документация:  https://painfrenemy2.github.io/ModGear/
  * ============================================================================
  */
 #if defined _ModGear_Interface_included
