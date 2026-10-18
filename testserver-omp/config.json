@@ -114,7 +114,7 @@
     "rcon": {
         "allow_teleport": false,
         "enable": false,
-        "password": "changeme"
+        "password": "modgear_test"
     },
     "sleep": 5,
     "use_dyn_ticks": true,
